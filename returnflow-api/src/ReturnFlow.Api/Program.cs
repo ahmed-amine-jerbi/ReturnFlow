@@ -18,6 +18,13 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 var jwtKey = builder.Configuration["Jwt:Key"]
     ?? throw new InvalidOperationException("Jwt:Key is not configured.");
 
+// The key in appsettings.json is public. Anywhere but Development, insist on a real one.
+if (!builder.Environment.IsDevelopment()
+    && (jwtKey.StartsWith("DEV_ONLY", StringComparison.Ordinal) || Encoding.UTF8.GetByteCount(jwtKey) < 32))
+{
+    throw new InvalidOperationException("Set Jwt:Key (env Jwt__Key) to a random secret of at least 32 bytes.");
+}
+
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

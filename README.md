@@ -111,6 +111,10 @@ cd returnflow-web && npm install && npm run dev
 
 ## Known limits
 
+- The customer enters the purchase date and amount. A real shop would read them from its order system
+  using the order reference, and send a claim to an agent when the order can't be found.
+- The automatic decision doesn't use a concurrency token yet. Adding a row version to `ReturnClaim`
+  would stop an agent decision and an automatic one from overwriting each other.
 - The queue between API and AI is in memory. Replace it with RabbitMQ or Redis streams to scale out.
 - The schema is created automatically on first run. Add EF Core migrations (`dotnet ef migrations add ...`) before a real deployment, and they will be applied instead.
 - Photo upload for claims and a push-notification channel are not built yet.
