@@ -1,0 +1,10 @@
+.env
+node_modules/
+dist/
+bin/
+obj/
+__pycache__/
+.venv/
+*.joblib
+.vs/
+TestResults/

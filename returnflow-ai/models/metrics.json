@@ -1,0 +1,27 @@
+{
+  "modelVersion": "synthetic-lr-1.1",
+  "dataSource": "synthetic",
+  "text": {
+    "accuracy": 0.739,
+    "classes": [
+      "damaged",
+      "defective",
+      "wrong_item",
+      "late_delivery",
+      "not_as_described",
+      "change_of_mind",
+      "other"
+    ],
+    "testTemplates": 31
+  },
+  "risk": {
+    "rocAuc": 0.775,
+    "precision": 0.767,
+    "recall": 0.148,
+    "precisionAtDecisionThreshold": 0.563,
+    "recallAtDecisionThreshold": 0.258,
+    "decisionThreshold": 0.35,
+    "positiveRate": 0.124,
+    "testSamples": 1250
+  }
+}
