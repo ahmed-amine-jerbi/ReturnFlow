@@ -9,7 +9,7 @@ Part of the ReturnFlow stack. For the full system, run the compose file one fold
 ```bash
 docker compose up -d db                      # PostgreSQL only
 dotnet run --project src/ReturnFlow.Api      # http://localhost:5080, docs at /scalar
-dotnet test
+dotnet test                                  # unit tests + integration tests (need Docker)
 ```
 
 Without the AI service running, new claims are sent to an agent (the API falls back safely). Start `returnflow-ai` to see automatic decisions.
@@ -37,7 +37,8 @@ Without the AI service running, new claims are sent to an agent (the API falls b
 
 ## Key design points
 
-- `Domain/ReturnClaim.cs` holds the business rules: a claim is decided only while open, and a human review reopens an automatically decided claim while keeping the full decision history.
+- `Domain/ReturnClaim.cs` holds the business rules. The policy can only decide a claim while it is being analyzed, and an agent only once it is waiting for one (routed by the policy, or sent back for review). A review reopens an automatically decided claim and keeps the full decision history.
+- `ReturnClaim.Version` maps to PostgreSQL's `xmin`, so two writes to the same claim can't overwrite each other: an agent gets 409, and the worker drops its stale result.
 - `Services/DecisionPolicy.cs` is pure code with unit tests. The AI advises, this decides.
 - `Workers/ClaimWorker.cs` processes a queue so filing a claim never waits for the AI, and resumes unfinished claims after a restart.
 - `Services/StatsService.cs` computes D1, D7 and lifetime KPIs plus the previous period.
@@ -48,7 +49,19 @@ Without the AI service running, new claims are sent to an agent (the API falls b
 
 ## Database
 
-With no EF Core migrations in the project, the schema is created automatically on first run (fine for the demo). When you change the model, either reset the database or add migrations (`dotnet ef migrations add Name --project src/ReturnFlow.Api`), which are then applied at startup.
+The schema comes from EF Core migrations in `src/ReturnFlow.Api/Data/Migrations`, applied at startup. After changing the model:
+
+```bash
+dotnet tool restore
+dotnet ef migrations add <Name> --project src/ReturnFlow.Api --output-dir Data/Migrations -- --environment Development
+```
+
+New rows and their audit entries are written in one transaction (`AppDbContext.AddWithAuditAsync`).
+
+## Tests
+
+- `tests/ReturnFlow.Tests`: unit tests for the decision policy and the claim's state rules.
+- `tests/ReturnFlow.IntegrationTests`: the real API against PostgreSQL in a throwaway container (Testcontainers). They cover migrations, the agent-decision rules, concurrency conflicts, audit rows, the AI-down fallback and ownership checks.
 
 ## License
 
