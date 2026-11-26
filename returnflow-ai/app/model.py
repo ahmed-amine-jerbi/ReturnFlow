@@ -9,7 +9,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
-from .readability import UNREADABLE, is_unreadable
+from .readability import UNREADABLE, build_vocabulary, is_unreadable
 from .schemas import AnalyzeRequest, AnalyzeResponse
 from .synthetic import CATEGORIES, RISK_FEATURES
 
@@ -52,13 +52,13 @@ class ClaimAnalyzer:
         self.metrics = json.loads(METRICS_PATH.read_text()) if METRICS_PATH.exists() else {}
 
         word_features = self.text_model.named_steps["features"].transformer_list[0][1]
-        self.known_words = {term for term in word_features.vocabulary_ if " " not in term}
+        self.vocabulary = build_vocabulary(term for term in word_features.vocabulary_ if " " not in term)
 
     def analyze(self, req: AnalyzeRequest) -> AnalyzeResponse:
         text = req.description.strip()[:MAX_DESCRIPTION_CHARS]
 
         # The model only maps text to a label; it never follows instructions written in the text.
-        if is_unreadable(text, self.known_words):
+        if is_unreadable(text, self.vocabulary):
             category, confidence = UNREADABLE, 1.0
         else:
             probabilities = self.text_model.predict_proba([text])[0]

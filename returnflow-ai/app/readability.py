@@ -8,9 +8,14 @@ and goes through the normal path.
 """
 
 import re
-from collections.abc import Iterable
+from collections.abc import Iterable, Iterator
 
 UNREADABLE = "unreadable"
+
+# Real claims have a recognizable word early on; checking more only costs time on long nonsense.
+_MAX_WORDS_CHECKED = 50
+_MIN_TYPO_LENGTH = 4
+_MAX_TYPO_LENGTH = 20
 
 _WORD = re.compile(r"[a-zà-öø-ÿß]+")
 _ALPHABET = "abcdefghijklmnopqrstuvwxyzàâäçéèêëîïôöùûüß"
@@ -26,24 +31,36 @@ _COMMON_WORDS = {
 }
 
 
-def is_unreadable(text: str, known_words: Iterable[str]) -> bool:
+def build_vocabulary(known_words: Iterable[str]) -> frozenset[str]:
+    """The words that count as recognizable. Build it once and reuse it for every request."""
+    return frozenset(known_words) | _COMMON_WORDS
+
+
+def is_unreadable(text: str, vocabulary: frozenset[str]) -> bool:
     """True when no word in `text` is recognizable. Empty text and text without letters are unreadable."""
-    vocabulary = set(known_words) | _COMMON_WORDS
-    words = _WORD.findall(text.lower())
+    words = _WORD.findall(text.lower())[:_MAX_WORDS_CHECKED]
     return not any(_is_recognizable(word, vocabulary) for word in words)
 
 
-def _is_recognizable(word: str, vocabulary: set[str]) -> bool:
+def _is_recognizable(word: str, vocabulary: frozenset[str]) -> bool:
     if word in vocabulary:
         return True
-    # Allow one typo, but only in longer words: short random strings would match too easily.
-    return len(word) >= 4 and any(variant in vocabulary for variant in _one_edit_away(word))
+    # One typo is allowed only in words of plausible length: short random strings would match too
+    # easily, and very long ones would make the variant search expensive for no real benefit.
+    if not _MIN_TYPO_LENGTH <= len(word) <= _MAX_TYPO_LENGTH:
+        return False
+    return any(variant in vocabulary for variant in _one_edit_away(word))
 
 
-def _one_edit_away(word: str) -> set[str]:
-    splits = [(word[:i], word[i:]) for i in range(len(word) + 1)]
-    deletes = {left + right[1:] for left, right in splits if right}
-    swaps = {left + right[1] + right[0] + right[2:] for left, right in splits if len(right) > 1}
-    replaces = {left + c + right[1:] for left, right in splits if right for c in _ALPHABET}
-    inserts = {left + c + right for left, right in splits for c in _ALPHABET}
-    return deletes | swaps | replaces | inserts
+def _one_edit_away(word: str) -> Iterator[str]:
+    """Every string one deletion, swap, replacement or insertion away from `word`, generated lazily."""
+    for i in range(len(word) + 1):
+        left, right = word[:i], word[i:]
+        if right:
+            yield left + right[1:]
+            for c in _ALPHABET:
+                yield left + c + right[1:]
+        if len(right) > 1:
+            yield left + right[1] + right[0] + right[2:]
+        for c in _ALPHABET:
+            yield left + c + right

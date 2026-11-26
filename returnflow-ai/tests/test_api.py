@@ -1,3 +1,5 @@
+import time
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -91,6 +93,14 @@ def test_text_with_no_readable_words_is_unreadable(client, description):
 
     assert r["category"] == "unreadable"
     assert r["confidence"] == 1.0
+
+
+def test_a_maximum_length_nonsense_word_is_rejected_quickly(client):
+    started = time.perf_counter()
+    r = analyze(client, description="z" * 1000)
+
+    assert r["category"] == "unreadable"
+    assert time.perf_counter() - started < 1.0
 
 
 @pytest.mark.parametrize(
