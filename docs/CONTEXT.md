@@ -76,8 +76,10 @@ match the JSON contract.
 |---|---|
 | Return (`ReturnRequest`) | A customer's request to send back one order item. Holds order reference, purchase date, item. |
 | Claim (`ReturnClaim`) | What the customer asks for on a return: a description and an amount. Today the UI files exactly one per return. |
-| Analysis | The AI service's output for a claim: category, risk score, confidence, reasons, recommendation. Advisory only. |
-| Recommendation | `Approve` or `Review`. The AI never recommends rejection. |
+| Analysis | The AI service's output for a claim: category, confidence, risk score, reasons. Descriptive only. |
+| Category | What a claim is about: `damaged` (arrived damaged), `defective`, `wrong_item`, `missing_parts`, `not_as_described`, `late_delivery`, `not_delivered`, `change_of_mind`, `customer_damage` (damaged after delivery by the customer), `other`. |
+| Confidence | The AI's probability that the category is right. |
+| Coverage | Whether the return policy covers a category: covered (approve), not covered (reject), or neither (agent). Configured in `Policy`. |
 | Policy (`DecisionPolicy`) | The deterministic rules that route a claim: auto-approve, auto-reject, or human. |
 | Route | The policy's output: `AutoApprove`, `AutoReject`, `Human`. |
 | Routing reason | The sentence explaining why the policy chose a route. Shown to customers and agents. |
@@ -122,6 +124,8 @@ Secrets live in `.env` (from `.env.example`), never in the repo. Compose runs th
 | 2026-11-26 | Biome for the web app; ruff for Python; .NET analyzers with warnings as errors | typescript-eslint does not support TypeScript 7; one fast tool per language, all enforced in CI | ESLint + Prettier |
 | 2026-11-26 | Agents decide only claims waiting for them (`NeedsHuman`, `HumanReviewRequested`); the policy only decides claims in `Analyzing` | The AI analyzes every claim first; removes the agent-vs-worker race at its source | Letting staff decide any open claim |
 | 2026-11-26 | `xmin` row version on claims; EF migrations applied at startup; entity + audit row in one transaction | Concurrent writes fail instead of overwriting; reproducible schema; no claim without its audit entry | Manual version column; `EnsureCreated` |
+| 2026-11-26 | Ten categories with coverage rules; the policy auto-rejects not-covered claims (customer damage) when the AI is sure; the AI no longer recommends | Minimal agent involvement (user's goal); coverage is a business rule, so it lives in configuration, not the model | AI never rejects; keyword rules for fault |
+| 2026-11-26 | Accuracy measured on 300 independently written claims, split dev/test; thresholds from held-out generated claims | Honest numbers: tuning on what you report inflates it | Measuring on generated phrases only |
 
 ## 11. Extension recipes
 
@@ -147,5 +151,8 @@ See the refactor audit (2026-11-26). Short list:
 
 ## 13. Open questions
 
-- Should the decision policy thresholds in `PolicyOptions` defaults match `appsettings.json`
-  (they differ today: 150 vs 600 amount, 0.70 vs 0.65 confidence)?
+- A text model that understands meaning (for example an LLM) would automate more claims at the same
+  accuracy. Worth it? It needs an API key and costs per claim.
+- Photo evidence: classify uploaded photos (damage, signs of misuse) with a vision model.
+- `docs/bpmn/returns-process.svg` must be re-exported from the updated `.bpmn` (labels for the
+  not-covered rejection).
