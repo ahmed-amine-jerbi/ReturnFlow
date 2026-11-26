@@ -47,6 +47,7 @@ export default function ReviewQueue() {
           ] as const
         ).map(([key, label]) => (
           <button
+            type="button"
             key={key}
             onClick={() => setTab(key)}
             className={`min-h-10 rounded-lg px-4 text-sm font-semibold transition ${tab === key ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
@@ -82,7 +83,7 @@ function QueueRow({ item, onOpen }: { item: StaffClaim; onOpen: () => void }) {
   const riskTone =
     risk == null ? 'bg-slate-300' : risk < 0.3 ? 'bg-emerald-500' : risk < 0.6 ? 'bg-amber-400' : 'bg-rose-500'
   return (
-    <button onClick={onOpen} className="block w-full text-left">
+    <button type="button" onClick={onOpen} className="block w-full text-left">
       <Card className="rf-fade-up flex items-center gap-4 px-5 py-4 transition hover:border-indigo-300 hover:shadow-md">
         <span className={`h-12 w-1.5 shrink-0 rounded-full ${riskTone}`} title={t('ai.riskLabel')} />
         <div className="min-w-0 flex-1">

@@ -2,7 +2,7 @@ import { createContext, type ReactNode, useCallback, useContext, useEffect, useM
 import { api, tokenStore } from './api'
 import type { AuthResponse, Role } from './types'
 
-interface User {
+export interface User {
   email: string
   role: Role
 }

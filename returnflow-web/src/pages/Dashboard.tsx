@@ -55,6 +55,7 @@ export default function Dashboard() {
         >
           {RANGES.map((r) => (
             <button
+              type="button"
               key={r.key}
               role="tab"
               aria-selected={range === r.key}

@@ -95,6 +95,7 @@ function ReturnCard({ item, onOpen }: { item: ReturnRequest; onOpen: (claimId: n
             return (
               <li key={c.id}>
                 <button
+                  type="button"
                   onClick={() => onOpen(c.id)}
                   className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left transition hover:bg-slate-50"
                 >

@@ -105,6 +105,7 @@ export default function Login() {
           <p className="mt-5 text-center text-sm text-slate-500">
             {mode === 'in' ? t('login.newHere') : t('login.alreadyAccount')}{' '}
             <button
+              type="button"
               className="font-semibold text-indigo-600 hover:underline"
               onClick={() => {
                 setMode(mode === 'in' ? 'up' : 'in')

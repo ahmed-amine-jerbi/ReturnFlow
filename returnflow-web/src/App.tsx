@@ -1,6 +1,6 @@
 import { lazy, type ReactNode, Suspense, useEffect, useState } from 'react'
 import { Badge, Button, Loading, Logo } from './components/ui'
-import { canSeeKpis, isStaff, useAuth } from './lib/auth'
+import { canSeeKpis, isStaff, type User, useAuth } from './lib/auth'
 import { LanguageSelect, useI18n } from './lib/i18n'
 import Login from './pages/Login'
 import MyReturns from './pages/MyReturns'
@@ -25,6 +25,7 @@ const icon = (d: string) => (
     strokeWidth="1.8"
     strokeLinecap="round"
     strokeLinejoin="round"
+    aria-hidden="true"
   >
     <path d={d} />
   </svg>
@@ -37,13 +38,13 @@ const ICONS = {
 
 export default function App() {
   const { user } = useAuth()
-  return user ? <Shell /> : <Login />
+  return user ? <Shell user={user} /> : <Login />
 }
 
-function Shell() {
-  const { user, signOut } = useAuth()
+function Shell({ user }: { user: User }) {
+  const { signOut } = useAuth()
   const { t } = useI18n()
-  const role = user!.role
+  const role = user.role
 
   const tabs: Tab[] = []
   if (canSeeKpis(role)) tabs.push({ key: 'kpis', label: t('nav.kpis'), icon: ICONS.kpis })
@@ -66,6 +67,7 @@ function Shell() {
             <nav className="hidden gap-1 sm:flex">
               {tabs.map((t) => (
                 <button
+                  type="button"
                   key={t.key}
                   onClick={() => setTab(t.key)}
                   className={`min-h-10 rounded-lg px-3.5 text-sm font-semibold transition ${tab === t.key ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100'}`}
@@ -77,7 +79,7 @@ function Shell() {
           </div>
           <div className="flex items-center gap-2 sm:gap-3">
             <div className="hidden text-right sm:block">
-              <p className="max-w-48 truncate text-sm font-medium text-slate-900">{user!.email}</p>
+              <p className="max-w-48 truncate text-sm font-medium text-slate-900">{user.email}</p>
             </div>
             <LanguageSelect />
             <Badge tone="indigo">{t(`role.${role}`)}</Badge>
@@ -105,6 +107,7 @@ function Shell() {
         >
           {tabs.map((t) => (
             <button
+              type="button"
               key={t.key}
               onClick={() => setTab(t.key)}
               className={`flex min-h-14 flex-col items-center justify-center gap-0.5 text-xs font-semibold ${tab === t.key ? 'text-indigo-600' : 'text-slate-500'}`}
