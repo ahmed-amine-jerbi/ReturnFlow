@@ -119,6 +119,7 @@ Secrets live in `.env` (from `.env.example`), never in the repo. Compose runs th
 | 2026-10-21 | In-memory queue + background worker | Enough for one instance; filing never waits on the AI | RabbitMQ / Redis for a demo |
 | 2026-10-21 | Synthetic training data | No real claims available; metrics are labelled as synthetic | |
 | 2026-11-26 | Refactor in place rather than rewrite; publish as one new GitHub repo for the whole stack | Code is small, tested and working; portfolio audience values readability and docs | Full rewrite; one repo per service |
+| 2026-11-26 | Biome for the web app; ruff for Python; .NET analyzers with warnings as errors | typescript-eslint does not support TypeScript 7; one fast tool per language, all enforced in CI | ESLint + Prettier |
 
 ## 11. Extension recipes
 
@@ -140,8 +141,7 @@ See the refactor audit (2026-11-26). Short list:
 - AI reasons and routing reasons are English sentences that the web app turns back into
   translation keys with regexes (`translateAnalysisText`).
 - Error responses mix `{ error }` objects and problem details.
-- Floating NuGet versions (`*`, `10.*`) and unpinned Python requirements.
-- No web lint or tests, no API integration tests, no Python lint.
+- No web tests and no API integration tests.
 
 ## 13. Open questions
 

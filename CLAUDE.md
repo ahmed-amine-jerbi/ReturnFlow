@@ -5,7 +5,10 @@
 - **What it is:** ReturnFlow, a returns and claims app. Customers file claims, a Python service scores them, a deterministic C# policy settles clear cases and routes the rest to agents, and managers see KPIs. A portfolio project: readability, docs and polish come first.
 - **Stack:** React 19 + TypeScript + Vite + Tailwind 4 + TanStack Query (`returnflow-web`) / ASP.NET Core on .NET 10 + EF Core + PostgreSQL 16 (`returnflow-api`) / Python 3.12 + FastAPI + scikit-learn (`returnflow-ai`) / Docker Compose / GitHub Actions
 - **Run it:** `docker compose up --build`, then http://localhost:8080 (one-tap demo logins). Without Docker, see "Development without Docker" in `README.md`.
-- **Check it:** `dotnet test returnflow-api/ReturnFlow.slnx` · `cd returnflow-ai && pytest` · `cd returnflow-web && npm run build`
+- **Check it (same as CI):**
+  - API: `cd returnflow-api && dotnet format ReturnFlow.slnx --verify-no-changes && dotnet build ReturnFlow.slnx -c Release && dotnet test ReturnFlow.slnx` (analyzers on, warnings are errors)
+  - AI: `cd returnflow-ai && ruff check . && ruff format --check . && pytest`
+  - Web: `cd returnflow-web && npx biome ci . && npm run build` (`npm run format` applies fixes)
 - **Reference implementation:** API: `Controllers/ClaimsController.cs` + `Services/DecisionPolicy.cs` (rules as pure functions, tested in `DecisionPolicyTests.cs`). Web: `pages/ReviewQueue.tsx`.
 - **Where things go:**
 
@@ -23,7 +26,7 @@
   | Tests | `returnflow-api/tests/ReturnFlow.Tests/`, `returnflow-ai/tests/` |
   | Process model | `docs/bpmn/` (keep in step with `DecisionPolicy.cs`) |
 
-- **Never edit:** `package-lock.json` files by hand, `bin/`, `obj/`, `dist/`, `returnflow-ai/models/*.joblib` (trained at build time), applied EF migrations
+- **Never edit:** `package-lock.json` files by hand (NuGet versions live in `returnflow-api/Directory.Packages.props`), `bin/`, `obj/`, `dist/`, `returnflow-ai/models/*.joblib` (trained at build time), applied EF migrations
 - **Context doc:** `docs/CONTEXT.md`
 
 ---
