@@ -2,7 +2,7 @@
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_ReturnFlow" targetNamespace="https://github.com/ahmed-amine-jerbi/returnflow">
   <bpmn:collaboration id="Collaboration_ReturnFlow">
     <bpmn:participant id="Pool_ReturnFlow" name="ReturnFlow: returns and claims" processRef="Process_Returns" />
-    <bpmn:textAnnotation id="Note_Policy"><bpmn:text>Decision policy (DecisionPolicy.cs, thresholds in appsettings.json), checked in order: 1) bought more than 30 days ago: reject. 2) no AI analysis: agent. 3) not covered (customer damage): reject if the AI is at least 0.61 sure, else agent. 4) category not in the covered list (other): agent. 5) AI under 0.59 sure, amount over 600 or risk over 0.35: agent. 6) 5% random spot-check: agent. 7) otherwise: approve.</bpmn:text></bpmn:textAnnotation>
+    <bpmn:textAnnotation id="Note_Policy"><bpmn:text>Decision policy (DecisionPolicy.cs, thresholds in appsettings.json), checked in order: 1) bought more than 30 days ago: reject. 2) no AI analysis: agent. 3) no readable words in the description: reject. 4) not covered (customer damage): reject if the AI is at least 0.61 sure, else agent. 5) category not in the covered list (other): agent. 6) AI under 0.59 sure, amount over 600 or risk over 0.35: agent. 7) 5% random spot-check: agent. 8) otherwise: approve.</bpmn:text></bpmn:textAnnotation>
     <bpmn:association id="Assoc_Policy" sourceRef="Task_Policy" targetRef="Note_Policy" />
   </bpmn:collaboration>
   <bpmn:process id="Process_Returns" name="Return and claim handling" isExecutable="false">

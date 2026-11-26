@@ -16,3 +16,7 @@ target-version = "py312"
 select = ["E", "F", "W", "I", "B", "UP", "SIM", "N", "RUF"]
 # X / X_train for feature matrices is the scikit-learn convention.
 ignore = ["N806"]
+
+[tool.ruff.lint.per-file-ignores]
+# Word lists read better as space-separated text than as one quoted string per word.
+"app/readability.py" = ["SIM905"]

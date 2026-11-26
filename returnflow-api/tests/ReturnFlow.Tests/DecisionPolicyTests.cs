@@ -72,6 +72,15 @@ public class DecisionPolicyTests
     }
 
     [Fact]
+    public void UnreadableDescription_IsRejected_WhateverTheAmountOrRisk()
+    {
+        var result = Run(amount: 5000, ai: Ai(DecisionPolicy.UnreadableCategory, confidence: 1.0, risk: 0.9));
+
+        Assert.Equal(ClaimRoute.AutoReject, result.Route);
+        Assert.Equal("The description does not say what is wrong", result.Reason);
+    }
+
+    [Fact]
     public void OtherCategory_GoesToHuman()
         => Assert.Equal(ClaimRoute.Human, Run(ai: Ai("other", confidence: 0.99)).Route);
 

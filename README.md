@@ -54,6 +54,7 @@ flowchart LR
 
 - The **AI describes, the policy decides.** The AI returns what the claim is about (one of ten categories), how sure it is, a risk score and reasons. It never decides on its own.
 - The **policy** (`DecisionPolicy.cs`) is deterministic and unit-tested. It approves covered claims (arrived damaged, defective, wrong item, missing parts, not as described, late, not delivered, change of mind) and rejects claims the return policy doesn't cover (damage the customer caused), but only when the AI is sure. Rejecting needs more certainty than approving. Coverage lists and thresholds live in `appsettings.json` under `Policy`.
+- A description with no readable words in English, French or German (keyboard mashing, random letters) is rejected as "The description does not say what is wrong". Vague but real text ("refund please") still goes to an agent.
 - Agents only see claims the AI is unsure about, risky or large claims, unclear ones, and a random spot-check.
 - A small share of would-be auto-approvals (`SpotCheckRate`, 5%) goes to a person anyway, to measure the AI's accuracy.
 - If the AI service is down, claims go to an agent instead of failing.

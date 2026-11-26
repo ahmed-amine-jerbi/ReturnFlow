@@ -2,7 +2,7 @@
 
 Claim analysis service for ReturnFlow. Given a claim and the customer's history it returns:
 
-- a **category**: `damaged` (arrived damaged), `defective`, `wrong_item`, `missing_parts`, `not_as_described`, `late_delivery`, `not_delivered`, `change_of_mind`, `customer_damage` (damaged after delivery by the customer), or `other`
+- a **category**: `damaged` (arrived damaged), `defective`, `wrong_item`, `missing_parts`, `not_as_described`, `late_delivery`, `not_delivered`, `change_of_mind`, `customer_damage` (damaged after delivery by the customer), `other`, or `unreadable` (no readable words, see `app/readability.py`)
 - a **confidence**: the probability that the category is right
 - a **risk score** from 0 to 1 and a list of human-readable **reasons**
 

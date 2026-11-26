@@ -77,7 +77,7 @@ match the JSON contract.
 | Return (`ReturnRequest`) | A customer's request to send back one order item. Holds order reference, purchase date, item. |
 | Claim (`ReturnClaim`) | What the customer asks for on a return: a description and an amount. Today the UI files exactly one per return. |
 | Analysis | The AI service's output for a claim: category, confidence, risk score, reasons. Descriptive only. |
-| Category | What a claim is about: `damaged` (arrived damaged), `defective`, `wrong_item`, `missing_parts`, `not_as_described`, `late_delivery`, `not_delivered`, `change_of_mind`, `customer_damage` (damaged after delivery by the customer), `other`. |
+| Category | What a claim is about: `damaged` (arrived damaged), `defective`, `wrong_item`, `missing_parts`, `not_as_described`, `late_delivery`, `not_delivered`, `change_of_mind`, `customer_damage` (damaged after delivery by the customer), `other`, `unreadable` (no readable words; decided by a rule in `readability.py`, not the classifier). |
 | Confidence | The AI's probability that the category is right. |
 | Coverage | Whether the return policy covers a category: covered (approve), not covered (reject), or neither (agent). Configured in `Policy`. |
 | Policy (`DecisionPolicy`) | The deterministic rules that route a claim: auto-approve, auto-reject, or human. |

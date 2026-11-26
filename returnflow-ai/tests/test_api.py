@@ -85,11 +85,26 @@ def test_instructions_in_the_text_are_just_text(client):
     assert "approve" not in str(r).lower()
 
 
-def test_empty_description_is_other_with_zero_confidence(client):
-    r = analyze(client, description="")
+@pytest.mark.parametrize("description", ["zeazeazeaz", "asdfgh", "aaa", "lol", "???", "qsdqsd qsdqsd", ""])
+def test_text_with_no_readable_words_is_unreadable(client, description):
+    r = analyze(client, description=description)
 
-    assert r["category"] == "other"
-    assert r["confidence"] == 0.0
+    assert r["category"] == "unreadable"
+    assert r["confidence"] == 1.0
+
+
+@pytest.mark.parametrize(
+    "description",
+    [
+        "broken",
+        "refund please",
+        "headphnes brokne",
+        "l'écran est arrivé cassé",
+        "Der Bildschirm ist kaputt",
+    ],
+)
+def test_short_misspelled_or_non_english_claims_are_still_readable(client, description):
+    assert analyze(client, description=description)["category"] != "unreadable"
 
 
 def test_model_info_reports_thresholds_and_realistic_accuracy(client):

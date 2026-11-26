@@ -11,6 +11,9 @@ public record PolicyResult(ClaimRoute Route, string Reason);
 /// </summary>
 public static class DecisionPolicy
 {
+    /// <summary>The AI's category for a description with no readable words, such as "asdfgh".</summary>
+    public const string UnreadableCategory = "unreadable";
+
     public static PolicyResult Evaluate(
         PolicyOptions options,
         DateOnly purchaseDate,
@@ -32,17 +35,21 @@ public static class DecisionPolicy
         if (ai is null)
             return Human("AI analysis was unavailable");
 
-        // 3. Claims the policy does not cover are rejected, but only when the AI is clearly sure.
+        // 3. A description with no readable words gives nothing to decide on.
+        if (ai.Category == UnreadableCategory)
+            return new(ClaimRoute.AutoReject, "The description does not say what is wrong");
+
+        // 4. Claims the policy does not cover are rejected, but only when the AI is clearly sure.
         if (options.NotCoveredCategories.Contains(ai.Category))
             return ai.Confidence >= options.MinConfidenceForAutoReject
                 ? new(ClaimRoute.AutoReject, "Not covered by the return policy")
                 : Human(Uncertain(ai));
 
-        // 4. Anything unknown or unclear ("other") is for a person.
+        // 5. Anything unknown or unclear ("other") is for a person.
         if (!options.CoveredCategories.Contains(ai.Category))
             return Human("This type of claim always goes to an agent");
 
-        // 5. Covered claims are approved when the AI is sure, the risk is low and the amount is small.
+        // 6. Covered claims are approved when the AI is sure, the risk is low and the amount is small.
         if (ai.Confidence < options.MinConfidenceForAutoApprove)
             return Human(Uncertain(ai));
         if (amount > options.AutoApproveMaxAmount)
@@ -50,7 +57,7 @@ public static class DecisionPolicy
         if (ai.RiskScore > options.MaxRiskForAutoApprove)
             return Human($"Risk score {ai.RiskScore:0.00} is above the automatic limit");
 
-        // 6. Quality control: a small random share is checked by a person anyway.
+        // 7. Quality control: a small random share is checked by a person anyway.
         if (spotCheckRoll < options.SpotCheckRate)
             return Human("Random quality spot-check");
 
