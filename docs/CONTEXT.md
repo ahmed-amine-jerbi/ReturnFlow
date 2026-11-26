@@ -114,7 +114,7 @@ Secrets live in `.env` (from `.env.example`), never in the repo. Compose runs th
 
 | Date | Decision | Why | Rejected |
 |---|---|---|---|
-| 2026-10-21 | React + TS / .NET / Python / PostgreSQL | Market research, see `docs/TECH_CHOICES.md` | Single-language stack |
+| 2026-10-21 | React + TS / .NET / Python / PostgreSQL | Each part gets the tool that fits its job, see `docs/TECH_CHOICES.md` | Single-language stack |
 | 2026-10-21 | AI advises, deterministic policy decides, AI never rejects | Explainable, testable, safe fallback when the model is wrong or down | Letting the model decide |
 | 2026-10-21 | In-memory queue + background worker | Enough for one instance; filing never waits on the AI | RabbitMQ / Redis for a demo |
 | 2026-10-21 | Synthetic training data | No real claims available; metrics are labelled as synthetic | |
