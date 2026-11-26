@@ -5,7 +5,11 @@ export type Decider = 'Auto' | 'Human'
 export type Outcome = 'Approved' | 'Rejected'
 export type Range = 'd1' | 'd7' | 'lifetime'
 
-export interface AuthResponse { token: string; email: string; role: Role }
+export interface AuthResponse {
+  token: string
+  email: string
+  role: Role
+}
 
 export interface AppConfig {
   demoMode: boolean

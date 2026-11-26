@@ -1,8 +1,13 @@
-import type { Claim } from '../lib/types'
 import { fmtDateTime, prettyCategory } from '../lib/format'
 import { translateAnalysisText, useI18n } from '../lib/i18n'
+import type { Claim } from '../lib/types'
 
-interface Step { title: string; detail?: string; at?: string; tone: 'done' | 'pending' | 'bad' | 'info' }
+interface Step {
+  title: string
+  detail?: string
+  at?: string
+  tone: 'done' | 'pending' | 'bad' | 'info'
+}
 
 export function ClaimTimeline({ claim }: { claim: Claim }) {
   const { t, language } = useI18n()
@@ -38,10 +43,19 @@ export function ClaimTimeline({ claim }: { claim: Claim }) {
   })
 
   if (claim.processing === 'NeedsHuman') {
-    steps.push({ title: t('timeline.waitingAgent'), detail: claim.routingReason ? translateAnalysisText(claim.routingReason, t) : undefined, tone: 'pending' })
+    steps.push({
+      title: t('timeline.waitingAgent'),
+      detail: claim.routingReason ? translateAnalysisText(claim.routingReason, t) : undefined,
+      tone: 'pending',
+    })
   }
 
-  const dot = { done: 'bg-emerald-500', bad: 'bg-rose-500', info: 'bg-indigo-500', pending: 'bg-amber-400 animate-pulse' }
+  const dot = {
+    done: 'bg-emerald-500',
+    bad: 'bg-rose-500',
+    info: 'bg-indigo-500',
+    pending: 'bg-amber-400 animate-pulse',
+  }
 
   return (
     <ol className="relative ml-2 space-y-5 border-l border-slate-200 pl-6">

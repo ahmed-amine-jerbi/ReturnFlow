@@ -1,4 +1,4 @@
-import { useEffect, type ButtonHTMLAttributes, type ReactNode } from 'react'
+import { type ButtonHTMLAttributes, type ReactNode, useEffect } from 'react'
 import type { Tone } from '../lib/format'
 import { useI18n } from '../lib/i18n'
 
@@ -12,7 +12,9 @@ const tones: Record<Tone, string> = {
 
 export function Badge({ tone = 'slate', pulse, children }: { tone?: Tone; pulse?: boolean; children: ReactNode }) {
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${tones[tone]}`}>
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${tones[tone]}`}
+    >
       {pulse && <span className="size-1.5 animate-pulse rounded-full bg-current" />}
       {children}
     </span>
@@ -70,7 +72,11 @@ export function Loading({ label = 'Loading...' }: { label?: string }) {
 }
 
 export function ErrorNote({ message }: { message: string }) {
-  return <div className="rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-700 ring-1 ring-inset ring-rose-200">{message}</div>
+  return (
+    <div className="rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-700 ring-1 ring-inset ring-rose-200">
+      {message}
+    </div>
+  )
 }
 
 export function EmptyState({ title, text, action }: { title: string; text: string; action?: ReactNode }) {
@@ -110,7 +116,10 @@ export function Sheet({ title, onClose, children }: { title: string; onClose: ()
   }, [onClose])
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/50 backdrop-blur-sm sm:items-center sm:p-6" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/50 backdrop-blur-sm sm:items-center sm:p-6"
+      onClick={onClose}
+    >
       <div
         role="dialog"
         aria-modal="true"
@@ -120,8 +129,14 @@ export function Sheet({ title, onClose, children }: { title: string; onClose: ()
       >
         <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
           <h2 className="text-base font-semibold text-slate-900">{title}</h2>
-          <button onClick={onClose} aria-label={t('common.close')} className="grid size-9 place-items-center rounded-full text-slate-500 hover:bg-slate-100">
-            <svg viewBox="0 0 20 20" className="size-5" fill="currentColor"><path d="M5.3 5.3a1 1 0 0 1 1.4 0L10 8.6l3.3-3.3a1 1 0 1 1 1.4 1.4L11.4 10l3.3 3.3a1 1 0 0 1-1.4 1.4L10 11.4l-3.3 3.3a1 1 0 0 1-1.4-1.4L8.6 10 5.3 6.7a1 1 0 0 1 0-1.4Z" /></svg>
+          <button
+            onClick={onClose}
+            aria-label={t('common.close')}
+            className="grid size-9 place-items-center rounded-full text-slate-500 hover:bg-slate-100"
+          >
+            <svg viewBox="0 0 20 20" className="size-5" fill="currentColor">
+              <path d="M5.3 5.3a1 1 0 0 1 1.4 0L10 8.6l3.3-3.3a1 1 0 1 1 1.4 1.4L11.4 10l3.3 3.3a1 1 0 0 1-1.4 1.4L10 11.4l-3.3 3.3a1 1 0 0 1-1.4-1.4L8.6 10 5.3 6.7a1 1 0 0 1 0-1.4Z" />
+            </svg>
           </button>
         </div>
         <div className="overflow-y-auto px-5 py-5 safe-bottom">{children}</div>

@@ -1,4 +1,14 @@
-import type { AppConfig, AuthResponse, Claim, Outcome, Processing, Range, ReturnRequest, StaffClaim, Stats } from './types'
+import type {
+  AppConfig,
+  AuthResponse,
+  Claim,
+  Outcome,
+  Processing,
+  Range,
+  ReturnRequest,
+  StaffClaim,
+  Stats,
+} from './types'
 
 const TOKEN_KEY = 'rf_token'
 
@@ -39,7 +49,10 @@ async function readError(res: Response): Promise<string> {
   try {
     const body = await res.json()
     if (typeof body?.error === 'string') return body.error
-    if (body?.errors) return Object.values(body.errors as Record<string, string[]>).flat().join(' ')
+    if (body?.errors)
+      return Object.values(body.errors as Record<string, string[]>)
+        .flat()
+        .join(' ')
     if (typeof body?.title === 'string') return body.title
   } catch {
     /* not JSON */
