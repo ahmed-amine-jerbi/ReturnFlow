@@ -1,86 +1,49 @@
+"""Claim analysis at request time. Training lives in train.py."""
+
 import json
 from pathlib import Path
 
 import joblib
 import numpy as np
-from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_auc_score
-from sklearn.model_selection import GroupShuffleSplit, train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
 from .schemas import AnalyzeRequest, AnalyzeResponse
-from .synthetic import CATEGORIES, RISK_FEATURES, make_risk_dataset, make_text_dataset
+from .synthetic import CATEGORIES, RISK_FEATURES
 
-MODEL_VERSION = "synthetic-lr-1.1"
-MODEL_PATH = Path(__file__).resolve().parent.parent / "models" / "model.joblib"
-METRICS_PATH = MODEL_PATH.with_name("metrics.json")
+MODEL_VERSION = "synthetic-lr-2.0"
+MODELS_DIR = Path(__file__).resolve().parent.parent / "models"
+MODEL_PATH = MODELS_DIR / "model.joblib"
+METRICS_PATH = MODELS_DIR / "metrics.json"
+MAX_DESCRIPTION_CHARS = 1000
 
-# Policy-style thresholds for the AI's *recommendation*. The final routing is decided by the API.
-APPROVE_MAX_RISK = 0.35
 
-
-def train() -> dict:
-    """Train both models on synthetic data, save them, and return evaluation metrics."""
-    texts, labels, groups = make_text_dataset()
-    train_indices, test_indices = next(
-        GroupShuffleSplit(n_splits=1, test_size=0.25, random_state=3).split(texts, labels, groups)
-    )
-    tx_train = [texts[i] for i in train_indices]
-    tx_test = [texts[i] for i in test_indices]
-    ty_train = [labels[i] for i in train_indices]
-    ty_test = [labels[i] for i in test_indices]
-    text_model = Pipeline(
-        [
-            ("tfidf", TfidfVectorizer(ngram_range=(1, 2), min_df=1, sublinear_tf=True)),
-            ("clf", LogisticRegression(max_iter=2000, C=3.0)),
-        ]
-    )
-    text_model.fit(tx_train, ty_train)
-    text_accuracy = accuracy_score(ty_test, text_model.predict(tx_test))
-
-    X, y = make_risk_dataset()
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=5, stratify=y)
-    risk_model = Pipeline(
-        [
-            ("scale", StandardScaler()),
-            ("clf", LogisticRegression(max_iter=2000, C=1.0)),
-        ]
-    )
-    risk_model.fit(X_train, y_train)
-    proba = risk_model.predict_proba(X_test)[:, 1]
-    pred = (proba >= 0.5).astype(int)
-    decision_pred = (proba >= APPROVE_MAX_RISK).astype(int)
-
-    metrics = {
-        "modelVersion": MODEL_VERSION,
-        "dataSource": "synthetic",
-        "text": {
-            "accuracy": round(float(text_accuracy), 3),
-            "classes": CATEGORIES,
-            "testTemplates": len({groups[i] for i in test_indices}),
-        },
-        "risk": {
-            "rocAuc": round(float(roc_auc_score(y_test, proba)), 3),
-            "precision": round(float(precision_score(y_test, pred, zero_division=0)), 3),
-            "recall": round(float(recall_score(y_test, pred, zero_division=0)), 3),
-            "precisionAtDecisionThreshold": round(float(precision_score(y_test, decision_pred, zero_division=0)), 3),
-            "recallAtDecisionThreshold": round(float(recall_score(y_test, decision_pred, zero_division=0)), 3),
-            "decisionThreshold": APPROVE_MAX_RISK,
-            "positiveRate": round(float(np.mean(y)), 3),
-            "testSamples": len(y_test),
-        },
-    }
-    MODEL_PATH.parent.mkdir(parents=True, exist_ok=True)
-    joblib.dump({"text": text_model, "risk": risk_model}, MODEL_PATH)
-    METRICS_PATH.write_text(json.dumps(metrics, indent=2))
-    return metrics
+def risk_feature_row(req: AnalyzeRequest, category: str, description_words: int) -> np.ndarray:
+    """One row in RISK_FEATURES order, shared by training data and live requests."""
+    h = req.history
+    category_onehot = [1.0 if c == category else 0.0 for c in CATEGORIES]
+    row = [
+        req.amount_requested,
+        h.previous_claims,
+        h.previous_rejected,
+        h.account_age_days,
+        h.claims_last_30_days,
+        description_words,
+        *category_onehot,
+    ]
+    if len(row) != len(RISK_FEATURES):
+        raise ValueError(f"Risk row has {len(row)} values but RISK_FEATURES lists {len(RISK_FEATURES)}")
+    return np.array([row], dtype=float)
 
 
 class ClaimAnalyzer:
+    """Classifies what a claim is about and scores how risky it is. It never decides; the API's policy does."""
+
     def __init__(self) -> None:
         if not MODEL_PATH.exists():
+            from .train import train  # trains on first start when no model was baked into the image
+
             train()
         bundle = joblib.load(MODEL_PATH)
         self.text_model: Pipeline = bundle["text"]
@@ -88,65 +51,35 @@ class ClaimAnalyzer:
         self.metrics = json.loads(METRICS_PATH.read_text()) if METRICS_PATH.exists() else {}
 
     def analyze(self, req: AnalyzeRequest) -> AnalyzeResponse:
-        text = req.description.strip()[:1000]
+        text = req.description.strip()[:MAX_DESCRIPTION_CHARS]
 
-        # 1) Category from the description. The model only maps text to a label; it never follows instructions in it.
+        # The model only maps text to a label; it never follows instructions written in the text.
         if text:
-            proba = self.text_model.predict_proba([text])[0]
-            idx = int(np.argmax(proba))
-            category = str(self.text_model.classes_[idx])
-            category_conf = float(proba[idx])
+            probabilities = self.text_model.predict_proba([text])[0]
+            best = int(np.argmax(probabilities))
+            category = str(self.text_model.classes_[best])
+            confidence = float(probabilities[best])
         else:
-            category, category_conf = "other", 0.0
+            category, confidence = "other", 0.0
 
-        # 2) Risk score from claim facts and history.
-        h = req.history
-        words = len(text.split())
-        cat_vec = [1.0 if c == category else 0.0 for c in CATEGORIES]
-        x = np.array(
-            [
-                [
-                    req.amount_requested,
-                    h.previous_claims,
-                    h.previous_rejected,
-                    h.account_age_days,
-                    h.claims_last_30_days,
-                    words,
-                    *cat_vec,
-                ]
-            ],
-            dtype=float,
-        )
-        risk = float(self.risk_model.predict_proba(x)[0, 1])
-
-        reasons = self._reasons(x, category, category_conf)
-
-        # 3) Confidence: how far the risk is from the 0.5 coin-flip, blended with the text confidence.
-        risk_certainty = 1.0 - 2.0 * min(risk, 1.0 - risk)
-        confidence = 0.6 * risk_certainty + 0.4 * category_conf
-
-        # 4) Recommendation. The AI can approve or ask for a human, but never rejects by itself.
-        valid_category = category not in ("other", "change_of_mind")
-        recommended = "Approve" if (risk < APPROVE_MAX_RISK and valid_category) else "Review"
-        if recommended == "Review" and not reasons:
-            reasons = ["Claim reason is not covered by the automatic approval rules"]
+        features = risk_feature_row(req, category, len(text.split()))
+        risk = float(self.risk_model.predict_proba(features)[0, 1])
 
         return AnalyzeResponse(
             claim_id=req.claim_id,
             category=category,
-            category_confidence=round(category_conf, 3),
+            confidence=round(confidence, 3),
             risk_score=round(risk, 3),
-            confidence=round(float(confidence), 3),
-            recommended_outcome=recommended,
-            reasons=reasons,
+            reasons=self._risk_reasons(features),
             model_version=MODEL_VERSION,
         )
 
-    def _reasons(self, x: np.ndarray, category: str, category_conf: float) -> list[str]:
+    def _risk_reasons(self, features: np.ndarray) -> list[str]:
+        """Up to three features that pushed the risk score up the most, in plain words."""
         scaler: StandardScaler = self.risk_model.named_steps["scale"]
-        clf: LogisticRegression = self.risk_model.named_steps["clf"]
-        contrib = clf.coef_[0] * scaler.transform(x)[0]  # log-odds contribution per feature
-        raw = dict(zip(RISK_FEATURES, x[0], strict=True))
+        classifier: LogisticRegression = self.risk_model.named_steps["clf"]
+        contributions = classifier.coef_[0] * scaler.transform(features)[0]  # log-odds per feature
+        raw = dict(zip(RISK_FEATURES, features[0], strict=True))
 
         labels = {
             "amount": lambda: f"High claimed amount ({raw['amount']:.0f})",
@@ -156,15 +89,12 @@ class ClaimAnalyzer:
             "account_age_days": lambda: f"New account ({int(raw['account_age_days'])} day(s) old)",
             "description_words": lambda: "Very short description",
         }
-        order = np.argsort(-contrib)
         reasons: list[str] = []
-        for i in order:
+        for i in np.argsort(-contributions):
             name = RISK_FEATURES[i]
-            if contrib[i] < 0.25 or name not in labels:
+            if contributions[i] < 0.25 or name not in labels:
                 continue
             reasons.append(labels[name]())
             if len(reasons) == 3:
                 break
-        if category_conf < 0.45:
-            reasons.append("Description is unclear, so the category is uncertain")
         return reasons
