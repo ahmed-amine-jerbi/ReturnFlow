@@ -120,6 +120,8 @@ Secrets live in `.env` (from `.env.example`), never in the repo. Compose runs th
 | 2026-10-21 | Synthetic training data | No real claims available; metrics are labelled as synthetic | |
 | 2026-11-26 | Refactor in place rather than rewrite; publish as one new GitHub repo for the whole stack | Code is small, tested and working; portfolio audience values readability and docs | Full rewrite; one repo per service |
 | 2026-11-26 | Biome for the web app; ruff for Python; .NET analyzers with warnings as errors | typescript-eslint does not support TypeScript 7; one fast tool per language, all enforced in CI | ESLint + Prettier |
+| 2026-11-26 | Agents decide only claims waiting for them (`NeedsHuman`, `HumanReviewRequested`); the policy only decides claims in `Analyzing` | The AI analyzes every claim first; removes the agent-vs-worker race at its source | Letting staff decide any open claim |
+| 2026-11-26 | `xmin` row version on claims; EF migrations applied at startup; entity + audit row in one transaction | Concurrent writes fail instead of overwriting; reproducible schema; no claim without its audit entry | Manual version column; `EnsureCreated` |
 
 ## 11. Extension recipes
 
@@ -128,20 +130,20 @@ Secrets live in `.env` (from `.env.example`), never in the repo. Compose runs th
 - **Policy rule:** add a step to `DecisionPolicy.Evaluate` in the right order, a threshold in
   `PolicyOptions` + `appsettings.json`, a test in `DecisionPolicyTests`, the BPMN model, and the
   web translation of its routing reason.
-- **Table / column:** entity in `Domain/`, configuration in `AppDbContext.OnModelCreating`.
-  There are no migrations yet (the schema is created with `EnsureCreated`).
+- **Table / column:** entity in `Domain/`, configuration in `AppDbContext.OnModelCreating`, then
+  `dotnet ef migrations add <Name> --project src/ReturnFlow.Api --output-dir Data/Migrations -- --environment Development`
+  (run `dotnet tool restore` once). Migrations apply at startup. Add an integration test if the
+  column has rules.
 - **Page:** a component in `web/src/pages/`, a tab entry in `App.tsx`, strings in all three
   languages in `lib/i18n.tsx`.
 
 ## 12. Tech debt
 
 See the refactor audit (2026-11-26). Short list:
-- No concurrency token on `ReturnClaim`: an agent decision and an automatic one can overwrite each other.
-- No EF migrations; the schema comes from `EnsureCreated`.
 - AI reasons and routing reasons are English sentences that the web app turns back into
   translation keys with regexes (`translateAnalysisText`).
 - Error responses mix `{ error }` objects and problem details.
-- No web tests and no API integration tests.
+- No web tests.
 
 ## 13. Open questions
 
