@@ -135,7 +135,7 @@ public static class DemoDataSeeder
             else
             {
                 var outcome = policy.Route == ClaimRoute.AutoApprove ? DecisionOutcome.Approved : DecisionOutcome.Rejected;
-                var auto = claim.Decide(null, outcome, "Automatic decision: " + policy.Reason, Decider.Auto);
+                var auto = claim.DecideAutomatically(outcome, policy.Reason);
                 auto.DecidedAt = created.AddSeconds(rng.Next(4, 20));
 
                 var reviewChance = policy.Route == ClaimRoute.AutoReject ? 0.35 : 0.04;
@@ -164,7 +164,7 @@ public static class DemoDataSeeder
 
         var outcome = rng.NextDouble() < 0.7 ? DecisionOutcome.Approved : DecisionOutcome.Rejected;
         var comment = outcome == DecisionOutcome.Approved ? "Checked the details, approved." : "Does not meet the return conditions.";
-        var decision = claim.Decide(agentId, outcome, comment, Decider.Human);
+        var decision = claim.DecideByAgent(agentId, outcome, comment);
         decision.DecidedAt = decidedAt;
     }
 

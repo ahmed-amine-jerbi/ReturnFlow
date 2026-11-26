@@ -93,7 +93,7 @@ public class ClaimResponse
             AiCategory = c.AiCategory,
             AiRiskScore = c.AiRiskScore,
             AiConfidence = c.AiConfidence,
-            AiReasons = string.IsNullOrEmpty(c.AiReasons) ? new() : c.AiReasons.Split('|').ToList(),
+            AiReasons = c.AiReasons,
             AiModelVersion = c.AiModelVersion,
             AnalyzedAt = c.AnalyzedAt,
             Decision = latest is null ? null : DecisionResponse.From(latest),

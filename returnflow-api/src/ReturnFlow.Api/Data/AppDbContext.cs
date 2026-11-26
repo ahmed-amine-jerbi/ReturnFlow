@@ -38,8 +38,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.Property(c => c.Processing).HasConversion<string>().HasMaxLength(30);
             e.Property(c => c.RoutingReason).HasMaxLength(300);
             e.Property(c => c.AiCategory).HasMaxLength(40);
-            e.Property(c => c.AiReasons).HasMaxLength(1000);
             e.Property(c => c.AiModelVersion).HasMaxLength(40);
+            e.Property(c => c.Version).IsRowVersion();
             e.HasOne(c => c.ReturnRequest).WithMany(r => r.Claims)
                 .HasForeignKey(c => c.ReturnRequestId);
             e.HasMany(c => c.Decisions).WithOne(d => d.Claim)

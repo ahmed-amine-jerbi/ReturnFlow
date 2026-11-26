@@ -4,19 +4,57 @@ namespace ReturnFlow.Tests;
 
 public class ReturnClaimTests
 {
-    private static ReturnClaim NewOpenClaim() => new()
+    private static ReturnClaim NewClaim() => new()
     {
         Id = 1,
         Description = "Item arrived damaged",
         AmountRequested = 49.90m
     };
 
-    [Fact]
-    public void Decide_ByHuman_SetsStatusProcessingAndDecision()
+    private static ReturnClaim ClaimInAgentQueue()
     {
-        var claim = NewOpenClaim();
+        var claim = NewClaim();
+        claim.SendToHuman("AI asked for a human review");
+        return claim;
+    }
 
-        var decision = claim.Decide(7, DecisionOutcome.Approved, "Photos confirm damage", Decider.Human);
+    [Fact]
+    public void NewClaim_StartsInAnalysis()
+    {
+        var claim = NewClaim();
+
+        Assert.Equal(ProcessingState.Analyzing, claim.Processing);
+        Assert.Equal(ClaimStatus.Open, claim.Status);
+    }
+
+    [Fact]
+    public void DecideAutomatically_DuringAnalysis_RecordsAnAutoDecision()
+    {
+        var claim = NewClaim();
+
+        var decision = claim.DecideAutomatically(DecisionOutcome.Approved, "Low risk");
+
+        Assert.Equal(ClaimStatus.Approved, claim.Status);
+        Assert.Equal(ProcessingState.AutoDecided, claim.Processing);
+        Assert.Equal(Decider.Auto, decision.DecidedBy);
+        Assert.Null(decision.AgentId);
+        Assert.Equal("Automatic decision: Low risk", decision.Comment);
+    }
+
+    [Fact]
+    public void DecideAutomatically_AfterRoutingToAnAgent_Throws()
+    {
+        var claim = ClaimInAgentQueue();
+
+        Assert.Throws<InvalidOperationException>(() => claim.DecideAutomatically(DecisionOutcome.Approved, "Low risk"));
+    }
+
+    [Fact]
+    public void DecideByAgent_InTheQueue_SetsStatusProcessingAndDecision()
+    {
+        var claim = ClaimInAgentQueue();
+
+        var decision = claim.DecideByAgent(7, DecisionOutcome.Approved, "Photos confirm damage");
 
         Assert.Equal(ClaimStatus.Approved, claim.Status);
         Assert.Equal(ProcessingState.HumanDecided, claim.Processing);
@@ -25,32 +63,45 @@ public class ReturnClaimTests
     }
 
     [Fact]
-    public void Decide_ByAuto_HasNoAgent()
+    public void DecideByAgent_WhileTheAiIsStillAnalyzing_Throws()
     {
-        var claim = NewOpenClaim();
+        var claim = NewClaim();
 
-        var decision = claim.Decide(null, DecisionOutcome.Approved, null, Decider.Auto);
-
-        Assert.Null(decision.AgentId);
-        Assert.Equal(Decider.Auto, decision.DecidedBy);
-        Assert.Equal(ProcessingState.AutoDecided, claim.Processing);
+        Assert.Throws<InvalidOperationException>(() => claim.DecideByAgent(7, DecisionOutcome.Approved, null));
     }
 
     [Fact]
-    public void Decide_Twice_Throws()
+    public void DecideByAgent_Twice_Throws()
     {
-        var claim = NewOpenClaim();
-        claim.Decide(7, DecisionOutcome.Approved, null, Decider.Human);
+        var claim = ClaimInAgentQueue();
+        claim.DecideByAgent(7, DecisionOutcome.Approved, null);
 
-        Assert.Throws<InvalidOperationException>(() =>
-            claim.Decide(8, DecisionOutcome.Rejected, null, Decider.Human));
+        Assert.Throws<InvalidOperationException>(() => claim.DecideByAgent(8, DecisionOutcome.Rejected, null));
+    }
+
+    [Fact]
+    public void DecideByAgent_OnAnAutoDecidedClaimWithoutAReviewRequest_Throws()
+    {
+        var claim = NewClaim();
+        claim.DecideAutomatically(DecisionOutcome.Rejected, "Outside the return window");
+
+        Assert.Throws<InvalidOperationException>(() => claim.DecideByAgent(7, DecisionOutcome.Approved, null));
+    }
+
+    [Fact]
+    public void SendToHuman_AfterAnAutomaticDecision_Throws()
+    {
+        var claim = NewClaim();
+        claim.DecideAutomatically(DecisionOutcome.Approved, "Low risk");
+
+        Assert.Throws<InvalidOperationException>(() => claim.SendToHuman("Too late"));
     }
 
     [Fact]
     public void RequestHumanReview_ReopensAnAutoDecidedClaim()
     {
-        var claim = NewOpenClaim();
-        claim.Decide(null, DecisionOutcome.Rejected, null, Decider.Auto);
+        var claim = NewClaim();
+        claim.DecideAutomatically(DecisionOutcome.Rejected, "Outside the return window");
 
         claim.RequestHumanReview();
 
@@ -58,16 +109,17 @@ public class ReturnClaimTests
         Assert.Equal(ProcessingState.HumanReviewRequested, claim.Processing);
         Assert.True(claim.HumanReviewRequested);
         Assert.NotNull(claim.ReviewRequestedAt);
+        Assert.True(claim.IsAwaitingAgent);
     }
 
     [Fact]
-    public void RequestHumanReview_AfterReopen_KeepsBothDecisions()
+    public void RequestHumanReview_ThenAgentDecides_KeepsBothDecisions()
     {
-        var claim = NewOpenClaim();
-        claim.Decide(null, DecisionOutcome.Rejected, null, Decider.Auto);
+        var claim = NewClaim();
+        claim.DecideAutomatically(DecisionOutcome.Rejected, "Outside the return window");
         claim.RequestHumanReview();
 
-        claim.Decide(7, DecisionOutcome.Approved, "Customer was right", Decider.Human);
+        claim.DecideByAgent(7, DecisionOutcome.Approved, "Customer was right");
 
         Assert.Equal(2, claim.Decisions.Count);
         Assert.Equal(ClaimStatus.Approved, claim.Status);
@@ -75,10 +127,20 @@ public class ReturnClaimTests
     }
 
     [Fact]
-    public void RequestHumanReview_OnClaimStillWaiting_Throws()
+    public void RequestHumanReview_OnClaimStillBeingAnalyzed_Throws()
     {
-        var claim = NewOpenClaim();
+        var claim = NewClaim();
 
         Assert.Throws<InvalidOperationException>(() => claim.RequestHumanReview());
+    }
+
+    [Fact]
+    public void ApplyAnalysis_KeepsReasonsAsAList()
+    {
+        var claim = NewClaim();
+
+        claim.ApplyAnalysis("damaged", 0.1, 0.9, ["New account", "Very short description"], "v1");
+
+        Assert.Equal(["New account", "Very short description"], claim.AiReasons);
     }
 }
