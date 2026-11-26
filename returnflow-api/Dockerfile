@@ -1,10 +1,11 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
-COPY Directory.Packages.props ./
+COPY Directory.Build.props Directory.Packages.props ./
 COPY src/ReturnFlow.Api/ReturnFlow.Api.csproj src/ReturnFlow.Api/
 RUN dotnet restore src/ReturnFlow.Api/ReturnFlow.Api.csproj
 COPY src/ src/
-RUN dotnet publish src/ReturnFlow.Api/ReturnFlow.Api.csproj -c Release -o /app/publish --no-restore
+# Analyzers and style rules run in CI; the image build only compiles.
+RUN dotnet publish src/ReturnFlow.Api/ReturnFlow.Api.csproj -c Release -o /app/publish --no-restore -p:RunAnalyzers=false
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
