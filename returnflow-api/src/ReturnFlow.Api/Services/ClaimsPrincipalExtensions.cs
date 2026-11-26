@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Security.Claims;
 using ReturnFlow.Api.Domain;
 
@@ -7,7 +8,7 @@ public static class ClaimsPrincipalExtensions
 {
     public static int GetUserId(this ClaimsPrincipal principal) =>
         int.Parse(principal.FindFirstValue("sub")
-                  ?? throw new InvalidOperationException("Missing 'sub' claim."));
+                  ?? throw new InvalidOperationException("Missing 'sub' claim."), CultureInfo.InvariantCulture);
 
     public static bool IsStaff(this ClaimsPrincipal principal) =>
         principal.IsInRole(nameof(Role.Agent))

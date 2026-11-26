@@ -1,0 +1,35 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+[*.{cs,csproj,props,slnx}]
+indent_size = 4
+
+[*.py]
+indent_size = 4
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.cs]
+csharp_style_namespace_declarations = file_scoped:warning
+csharp_using_directive_placement = outside_namespace:warning
+dotnet_sort_system_directives_first = true
+csharp_style_var_for_built_in_types = true:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_prefer_braces = when_multiline:suggestion
+dotnet_style_readonly_field = true:warning
+dotnet_diagnostic.IDE0005.severity = warning
+
+# ClaimQueue is a queue of claims; the domain name is clearer than the rule's suggested alternatives.
+dotnet_diagnostic.CA1711.severity = none
+
+[returnflow-api/tests/**.cs]
+# Test names read as specs: Scenario_ExpectedOutcome.
+dotnet_diagnostic.CA1707.severity = none
