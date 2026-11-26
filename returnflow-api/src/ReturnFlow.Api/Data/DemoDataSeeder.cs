@@ -44,7 +44,12 @@ public static class DemoDataSeeder
         var options = new PolicyOptions();
         var hash = BCrypt.Net.BCrypt.HashPassword(config["Seed:Password"] ?? "ChangeMe123!");
 
-        var customers = new List<AppUser> { demoCustomer };
+        // The one-tap demo customer is an established customer with a clean record, so a clear claim
+        // filed during a demo is settled automatically. The generated history goes to other customers;
+        // otherwise the risk model rightly flags the demo account as a frequent claimant.
+        demoCustomer.CreatedAt = now.AddDays(-400);
+
+        var customers = new List<AppUser>();
         foreach (var name in CustomerNames)
         {
             customers.Add(new AppUser
@@ -55,7 +60,7 @@ public static class DemoDataSeeder
                 CreatedAt = now.AddDays(-rng.Next(5, 600))
             });
         }
-        db.Users.AddRange(customers.Skip(1));
+        db.Users.AddRange(customers);
         await db.SaveChangesAsync();
 
         const int total = 90;
