@@ -26,11 +26,7 @@ public class AuthController(AppDbContext db, TokenService tokens) : ControllerBa
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(req.Password),
             Role = Role.Customer
         };
-        db.Users.Add(user);
-        await db.SaveChangesAsync();
-
-        db.AuditLogs.Add(AuditLog.For(user.Id, "UserRegistered", nameof(AppUser), user.Id));
-        await db.SaveChangesAsync();
+        await db.AddWithAuditAsync(user, u => AuditLog.For(u.Id, "UserRegistered", nameof(AppUser), u.Id));
 
         return Ok(tokens.Create(user));
     }
