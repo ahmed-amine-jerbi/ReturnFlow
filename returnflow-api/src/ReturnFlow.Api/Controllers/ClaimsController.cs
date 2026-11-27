@@ -53,7 +53,7 @@ public class ClaimsController(AppDbContext db) : ControllerBase
         return Ok(ClaimResponse.From(claim));
     }
 
-    /// <summary>A person makes the final call on a claim.</summary>
+    /// <summary>An agent makes the final call on a claim that is waiting in the review queue.</summary>
     [HttpPatch("{id:int}/decision")]
     [Authorize(Roles = "Agent,Manager,Admin")]
     public async Task<ActionResult<ClaimResponse>> Decide(int id, DecisionRequest req)
@@ -65,7 +65,7 @@ public class ClaimsController(AppDbContext db) : ControllerBase
 
         try
         {
-            claim.Decide(agentId, req.Outcome, req.Comment?.Trim(), Decider.Human);
+            claim.DecideByAgent(agentId, req.Outcome, req.Comment?.Trim());
         }
         catch (InvalidOperationException ex)
         {
@@ -73,7 +73,7 @@ public class ClaimsController(AppDbContext db) : ControllerBase
         }
 
         db.AuditLogs.Add(AuditLog.For(agentId, $"HumanDecision:{req.Outcome}", nameof(ReturnClaim), claim.Id));
-        await db.SaveChangesAsync();
+        if (!await TrySaveAsync()) return Conflict(new { error = ChangedMeanwhile });
 
         return Ok(ClaimResponse.From(claim));
     }
@@ -104,8 +104,24 @@ public class ClaimsController(AppDbContext db) : ControllerBase
         }
 
         db.AuditLogs.Add(AuditLog.For(userId, "HumanReviewRequested", nameof(ReturnClaim), claim.Id));
-        await db.SaveChangesAsync();
+        if (!await TrySaveAsync()) return Conflict(new { error = ChangedMeanwhile });
 
         return Ok(ClaimResponse.From(claim));
+    }
+
+    private const string ChangedMeanwhile = "This claim was changed by someone else. Reload it and try again.";
+
+    /// <summary>False when the claim changed after it was loaded (see <see cref="ReturnClaim.Version"/>).</summary>
+    private async Task<bool> TrySaveAsync()
+    {
+        try
+        {
+            await db.SaveChangesAsync();
+            return true;
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            return false;
+        }
     }
 }

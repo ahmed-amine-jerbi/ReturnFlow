@@ -12,6 +12,12 @@ public class ReturnClaim
     public ClaimStatus Status { get; set; } = ClaimStatus.Open;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+    /// <summary>
+    /// Concurrency token, mapped to PostgreSQL's xmin system column. It changes on every update, so
+    /// saving a claim that someone else changed since it was loaded fails instead of overwriting.
+    /// </summary>
+    public uint Version { get; set; }
+
     // --- Automation state ---
     public ProcessingState Processing { get; set; } = ProcessingState.Analyzing;
     public string? RoutingReason { get; set; }
@@ -22,16 +28,21 @@ public class ReturnClaim
     public string? AiCategory { get; set; }
     public double? AiRiskScore { get; set; }
     public double? AiConfidence { get; set; }
-    public string? AiReasons { get; set; }   // reasons joined with '|'
+    public List<string> AiReasons { get; set; } = [];
     public string? AiModelVersion { get; set; }
     public DateTime? AnalyzedAt { get; set; }
 
     /// <summary>Every decision ever made on this claim (a reopened claim has more than one).</summary>
-    public List<Decision> Decisions { get; set; } = new();
+    public List<Decision> Decisions { get; set; } = [];
 
     [NotMapped]
     public Decision? LatestDecision =>
         Decisions.OrderByDescending(d => d.DecidedAt).ThenByDescending(d => d.Id).FirstOrDefault();
+
+    /// <summary>True while the claim is in an agent's queue: routed to a person, or sent back for review.</summary>
+    [NotMapped]
+    public bool IsAwaitingAgent =>
+        Processing is ProcessingState.NeedsHuman or ProcessingState.HumanReviewRequested;
 
     public void ApplyAnalysis(string category, double risk, double confidence,
                               IEnumerable<string> reasons, string modelVersion)
@@ -39,35 +50,37 @@ public class ReturnClaim
         AiCategory = category;
         AiRiskScore = risk;
         AiConfidence = confidence;
-        AiReasons = string.Join("|", reasons);
+        AiReasons = [.. reasons];
         AiModelVersion = modelVersion;
         AnalyzedAt = DateTime.UtcNow;
     }
 
-    /// <summary>Business rule: a claim can only be decided while it is open.</summary>
-    public Decision Decide(int? agentId, DecisionOutcome outcome, string? comment, Decider by)
+    /// <summary>The policy settles the claim right after the AI analysis.</summary>
+    public Decision DecideAutomatically(DecisionOutcome outcome, string reason)
     {
-        if (Status != ClaimStatus.Open)
-            throw new InvalidOperationException("This claim has already been decided.");
+        if (Processing != ProcessingState.Analyzing)
+            throw new InvalidOperationException("Only a claim that is being analyzed can be decided automatically.");
 
-        Status = outcome == DecisionOutcome.Approved ? ClaimStatus.Approved : ClaimStatus.Rejected;
-        Processing = by == Decider.Auto ? ProcessingState.AutoDecided : ProcessingState.HumanDecided;
+        return RecordDecision(null, outcome, "Automatic decision: " + reason, Decider.Auto);
+    }
 
-        var decision = new Decision
-        {
-            ClaimId = Id,
-            AgentId = agentId,
-            DecidedBy = by,
-            Outcome = outcome,
-            Comment = comment,
-            DecidedAt = DateTime.UtcNow
-        };
-        Decisions.Add(decision);
-        return decision;
+    /// <summary>
+    /// An agent makes the call. The AI analyzes every claim first, so an agent can only decide a claim
+    /// that the policy sent to a person or that someone asked to have reviewed.
+    /// </summary>
+    public Decision DecideByAgent(int agentId, DecisionOutcome outcome, string? comment)
+    {
+        if (!IsAwaitingAgent)
+            throw new InvalidOperationException("This claim is not waiting for an agent.");
+
+        return RecordDecision(agentId, outcome, comment, Decider.Human);
     }
 
     public void SendToHuman(string reason)
     {
+        if (Processing != ProcessingState.Analyzing)
+            throw new InvalidOperationException("Only a claim that is being analyzed can be routed to an agent.");
+
         Processing = ProcessingState.NeedsHuman;
         RoutingReason = reason;
     }
@@ -82,5 +95,23 @@ public class ReturnClaim
         ReviewRequestedAt = DateTime.UtcNow;
         Status = ClaimStatus.Open;
         Processing = ProcessingState.HumanReviewRequested;
+    }
+
+    private Decision RecordDecision(int? agentId, DecisionOutcome outcome, string? comment, Decider by)
+    {
+        Status = outcome == DecisionOutcome.Approved ? ClaimStatus.Approved : ClaimStatus.Rejected;
+        Processing = by == Decider.Auto ? ProcessingState.AutoDecided : ProcessingState.HumanDecided;
+
+        var decision = new Decision
+        {
+            ClaimId = Id,
+            AgentId = agentId,
+            DecidedBy = by,
+            Outcome = outcome,
+            Comment = comment,
+            DecidedAt = DateTime.UtcNow
+        };
+        Decisions.Add(decision);
+        return decision;
     }
 }

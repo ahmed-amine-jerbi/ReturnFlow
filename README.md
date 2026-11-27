@@ -103,7 +103,7 @@ cd returnflow-ai && python -m venv .venv && . .venv/bin/activate   # Windows: .v
 pip install -r requirements-dev.txt && pytest && uvicorn app.main:app --port 8000
 
 # API (new terminal): http://localhost:5080, docs at /scalar
-cd returnflow-api && dotnet test && dotnet run --project src/ReturnFlow.Api
+cd returnflow-api && dotnet test && dotnet run --project src/ReturnFlow.Api   # integration tests need Docker
 
 # Web (new terminal): http://localhost:5173, forwards /api to the API
 cd returnflow-web && npm install && npm run dev
@@ -113,10 +113,9 @@ cd returnflow-web && npm install && npm run dev
 
 - The customer enters the purchase date and amount. A real shop would read them from its order system
   using the order reference, and send a claim to an agent when the order can't be found.
-- The automatic decision doesn't use a concurrency token yet. Adding a row version to `ReturnClaim`
-  would stop an agent decision and an automatic one from overwriting each other.
 - The queue between API and AI is in memory. Replace it with RabbitMQ or Redis streams to scale out.
-- The schema is created automatically on first run. Add EF Core migrations (`dotnet ef migrations add ...`) before a real deployment, and they will be applied instead.
+- Migrations are applied automatically at startup, which suits one instance. With several instances,
+  apply them as a deployment step instead (`dotnet ef database update` or a migration bundle).
 - Photo upload for claims and a push-notification channel are not built yet.
 - The web app is an installable PWA shell without offline support. Phones need HTTPS to install it.
 

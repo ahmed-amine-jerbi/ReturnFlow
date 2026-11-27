@@ -18,12 +18,12 @@
   | Entities and their state rules | `.../Domain/` |
   | Business rules, AI client, KPIs, tokens | `.../Services/` |
   | Background jobs | `.../Workers/` |
-  | EF Core model and seeding | `.../Data/` |
+  | EF Core model, migrations and seeding | `.../Data/`, `.../Data/Migrations/` |
   | Request and response contracts | `.../Dtos/` (mirrored by hand in `returnflow-web/src/lib/types.ts`) |
   | Policy thresholds | `appsettings.json` -> `Policy` |
   | AI inference / training / synthetic data | `returnflow-ai/app/model.py`, `train.py`, `synthetic.py` |
   | Screens / shared UI / API client, auth, i18n, formatting | `returnflow-web/src/pages/`, `components/`, `lib/` |
-  | Tests | `returnflow-api/tests/ReturnFlow.Tests/`, `returnflow-ai/tests/` |
+  | Tests | `returnflow-api/tests/ReturnFlow.Tests/` (unit), `returnflow-api/tests/ReturnFlow.IntegrationTests/` (API + PostgreSQL via Testcontainers, needs Docker), `returnflow-ai/tests/` |
   | Process model | `docs/bpmn/` (keep in step with `DecisionPolicy.cs`) |
 
 - **Never edit:** `package-lock.json` files by hand (NuGet versions live in `returnflow-api/Directory.Packages.props`), `bin/`, `obj/`, `dist/`, `returnflow-ai/models/*.joblib` (trained at build time), applied EF migrations

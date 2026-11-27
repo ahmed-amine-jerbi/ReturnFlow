@@ -6,7 +6,7 @@ using ReturnFlow.Api.Domain;
 namespace ReturnFlow.Api.Services;
 
 /// <summary>Analyzes one claim with the AI service, applies the decision policy, and saves the outcome.</summary>
-public class ClaimProcessor(AppDbContext db, AiClient ai, IOptions<PolicyOptions> options)
+public partial class ClaimProcessor(AppDbContext db, AiClient ai, IOptions<PolicyOptions> options, ILogger<ClaimProcessor> log)
 {
     public async Task ProcessAsync(int claimId, CancellationToken ct)
     {
@@ -63,11 +63,11 @@ public class ClaimProcessor(AppDbContext db, AiClient ai, IOptions<PolicyOptions
         switch (policy.Route)
         {
             case ClaimRoute.AutoApprove:
-                claim.Decide(null, DecisionOutcome.Approved, "Automatic decision: " + policy.Reason, Decider.Auto);
+                claim.DecideAutomatically(DecisionOutcome.Approved, policy.Reason);
                 db.AuditLogs.Add(AuditLog.For(null, "AutoDecision:Approved", nameof(ReturnClaim), claim.Id));
                 break;
             case ClaimRoute.AutoReject:
-                claim.Decide(null, DecisionOutcome.Rejected, "Automatic decision: " + policy.Reason, Decider.Auto);
+                claim.DecideAutomatically(DecisionOutcome.Rejected, policy.Reason);
                 db.AuditLogs.Add(AuditLog.For(null, "AutoDecision:Rejected", nameof(ReturnClaim), claim.Id));
                 break;
             default:
@@ -76,6 +76,18 @@ public class ClaimProcessor(AppDbContext db, AiClient ai, IOptions<PolicyOptions
                 break;
         }
 
-        await db.SaveChangesAsync(ct);
+        try
+        {
+            await db.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            // Someone else saved this claim while the AI was working, for example a second worker pass
+            // over the same id. Their write stands; this result is dropped rather than overwriting it.
+            LogStaleResultDropped(log, claimId);
+        }
     }
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Claim {ClaimId} changed during analysis; the automatic result was dropped")]
+    private static partial void LogStaleResultDropped(ILogger logger, int claimId);
 }

@@ -1,4 +1,8 @@
 <Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/tests/">
+    <Project Path="tests/ReturnFlow.IntegrationTests/ReturnFlow.IntegrationTests.csproj" />
+  </Folder>
   <Project Path="src/ReturnFlow.Api/ReturnFlow.Api.csproj" />
   <Project Path="tests/ReturnFlow.Tests/ReturnFlow.Tests.csproj" />
 </Solution>

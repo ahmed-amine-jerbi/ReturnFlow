@@ -32,11 +32,7 @@ public class ReturnsController(AppDbContext db, ClaimQueue queue) : ControllerBa
             PurchaseDate = req.PurchaseDate,
             Reason = req.Reason.Trim()
         };
-        db.Returns.Add(entity);
-        await db.SaveChangesAsync();
-
-        db.AuditLogs.Add(AuditLog.For(userId, "ReturnCreated", nameof(ReturnRequest), entity.Id));
-        await db.SaveChangesAsync();
+        await db.AddWithAuditAsync(entity, r => AuditLog.For(userId, "ReturnCreated", nameof(ReturnRequest), r.Id));
 
         return CreatedAtAction(nameof(GetById), new { id = entity.Id }, ReturnResponse.From(entity));
     }
@@ -90,11 +86,7 @@ public class ReturnsController(AppDbContext db, ClaimQueue queue) : ControllerBa
             AmountRequested = req.AmountRequested,
             Processing = ProcessingState.Analyzing
         };
-        db.Claims.Add(claim);
-        await db.SaveChangesAsync();
-
-        db.AuditLogs.Add(AuditLog.For(userId, "ClaimCreated", nameof(ReturnClaim), claim.Id));
-        await db.SaveChangesAsync();
+        await db.AddWithAuditAsync(claim, c => AuditLog.For(userId, "ClaimCreated", nameof(ReturnClaim), c.Id));
 
         // Hand over to the background worker: the AI analysis does not block this request.
         queue.Enqueue(claim.Id);

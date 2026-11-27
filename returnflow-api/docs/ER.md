@@ -37,10 +37,11 @@ erDiagram
         string AiCategory
         double AiRiskScore
         double AiConfidence
-        string AiReasons
+        text_array AiReasons
         string AiModelVersion
         datetime AnalyzedAt
         datetime CreatedAt
+        xid xmin "row version, concurrency token"
     }
     Decision {
         int Id PK

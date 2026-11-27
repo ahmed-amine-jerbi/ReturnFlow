@@ -78,17 +78,12 @@ var app = builder.Build();
 
 app.UseExceptionHandler();
 
-// Create the schema (or apply migrations) and seed demo data in Development.
+// Apply pending migrations, then seed demo data in Development.
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-    // No migrations in the project yet: create the schema directly (fine for the demo).
-    // Once you add migrations (dotnet ef migrations add ...), they are applied instead.
-    if (db.Database.GetMigrations().Any())
-        await db.Database.MigrateAsync();
-    else
-        await db.Database.EnsureCreatedAsync();
+    await db.Database.MigrateAsync();
 
     // Demo users are only created in Development, and only when demo mode is on or you chose a seed password.
     var demoMode = app.Configuration.GetValue<bool>("Seed:DemoData");

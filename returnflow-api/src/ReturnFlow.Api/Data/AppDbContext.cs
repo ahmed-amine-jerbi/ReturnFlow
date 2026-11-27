@@ -11,6 +11,21 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Decision> Decisions => Set<Decision>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
 
+    /// <summary>
+    /// Inserts a new entity and its audit row in one transaction. Two saves are needed because the
+    /// audit row references the id the database generates; the transaction keeps them all-or-nothing.
+    /// </summary>
+    public async Task AddWithAuditAsync<TEntity>(TEntity entity, Func<TEntity, AuditLog> auditFor, CancellationToken ct = default)
+        where TEntity : class
+    {
+        await using var transaction = await Database.BeginTransactionAsync(ct);
+        Add(entity);
+        await SaveChangesAsync(ct);
+        AuditLogs.Add(auditFor(entity));
+        await SaveChangesAsync(ct);
+        await transaction.CommitAsync(ct);
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AppUser>(e =>
@@ -38,8 +53,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.Property(c => c.Processing).HasConversion<string>().HasMaxLength(30);
             e.Property(c => c.RoutingReason).HasMaxLength(300);
             e.Property(c => c.AiCategory).HasMaxLength(40);
-            e.Property(c => c.AiReasons).HasMaxLength(1000);
             e.Property(c => c.AiModelVersion).HasMaxLength(40);
+            e.Property(c => c.Version).IsRowVersion();
             e.HasOne(c => c.ReturnRequest).WithMany(r => r.Claims)
                 .HasForeignKey(c => c.ReturnRequestId);
             e.HasMany(c => c.Decisions).WithOne(d => d.Claim)

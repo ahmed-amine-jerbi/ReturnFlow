@@ -44,7 +44,12 @@ public static class DemoDataSeeder
         var options = new PolicyOptions();
         var hash = BCrypt.Net.BCrypt.HashPassword(config["Seed:Password"] ?? "ChangeMe123!");
 
-        var customers = new List<AppUser> { demoCustomer };
+        // The one-tap demo customer is an established customer with a clean record, so a clear claim
+        // filed during a demo is settled automatically. The generated history goes to other customers;
+        // otherwise the risk model rightly flags the demo account as a frequent claimant.
+        demoCustomer.CreatedAt = now.AddDays(-400);
+
+        var customers = new List<AppUser>();
         foreach (var name in CustomerNames)
         {
             customers.Add(new AppUser
@@ -55,7 +60,7 @@ public static class DemoDataSeeder
                 CreatedAt = now.AddDays(-rng.Next(5, 600))
             });
         }
-        db.Users.AddRange(customers.Skip(1));
+        db.Users.AddRange(customers);
         await db.SaveChangesAsync();
 
         const int total = 90;
@@ -135,7 +140,7 @@ public static class DemoDataSeeder
             else
             {
                 var outcome = policy.Route == ClaimRoute.AutoApprove ? DecisionOutcome.Approved : DecisionOutcome.Rejected;
-                var auto = claim.Decide(null, outcome, "Automatic decision: " + policy.Reason, Decider.Auto);
+                var auto = claim.DecideAutomatically(outcome, policy.Reason);
                 auto.DecidedAt = created.AddSeconds(rng.Next(4, 20));
 
                 var reviewChance = policy.Route == ClaimRoute.AutoReject ? 0.35 : 0.04;
@@ -164,7 +169,7 @@ public static class DemoDataSeeder
 
         var outcome = rng.NextDouble() < 0.7 ? DecisionOutcome.Approved : DecisionOutcome.Rejected;
         var comment = outcome == DecisionOutcome.Approved ? "Checked the details, approved." : "Does not meet the return conditions.";
-        var decision = claim.Decide(agentId, outcome, comment, Decider.Human);
+        var decision = claim.DecideByAgent(agentId, outcome, comment);
         decision.DecidedAt = decidedAt;
     }
 
