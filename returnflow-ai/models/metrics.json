@@ -1,27 +1,365 @@
 {
-  "modelVersion": "synthetic-lr-1.1",
-  "dataSource": "synthetic",
+  "modelVersion": "synthetic-lr-2.0",
+  "dataSource": "synthetic training data; realistic evaluation set written separately",
+  "categories": [
+    "damaged",
+    "defective",
+    "wrong_item",
+    "missing_parts",
+    "not_as_described",
+    "late_delivery",
+    "not_delivered",
+    "change_of_mind",
+    "customer_damage",
+    "other"
+  ],
+  "thresholds": {
+    "autoApprove": 0.59,
+    "autoReject": 0.61
+  },
   "text": {
-    "accuracy": 0.739,
-    "classes": [
-      "damaged",
-      "defective",
-      "wrong_item",
-      "late_delivery",
-      "not_as_described",
-      "change_of_mind",
-      "other"
-    ],
-    "testTemplates": 31
+    "regularizationC": 1.0,
+    "syntheticHoldout": {
+      "samples": 1010,
+      "accuracy": 0.717,
+      "confidentShare": 0.35,
+      "accuracyWhenConfident": 0.972,
+      "perCategory": {
+        "damaged": {
+          "precision": 0.616,
+          "recall": 0.74
+        },
+        "defective": {
+          "precision": 0.648,
+          "recall": 0.747
+        },
+        "wrong_item": {
+          "precision": 0.958,
+          "recall": 0.919
+        },
+        "missing_parts": {
+          "precision": 0.596,
+          "recall": 0.537
+        },
+        "not_as_described": {
+          "precision": 0.717,
+          "recall": 0.835
+        },
+        "late_delivery": {
+          "precision": 0.75,
+          "recall": 0.89
+        },
+        "not_delivered": {
+          "precision": 0.564,
+          "recall": 0.533
+        },
+        "change_of_mind": {
+          "precision": 0.813,
+          "recall": 0.535
+        },
+        "customer_damage": {
+          "precision": 0.776,
+          "recall": 0.735
+        },
+        "other": {
+          "precision": 0.785,
+          "recall": 0.816
+        }
+      }
+    },
+    "dev": {
+      "samples": 150,
+      "accuracy": 0.973,
+      "confidentShare": 0.673,
+      "accuracyWhenConfident": 1.0,
+      "perCategory": {
+        "damaged": {
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "defective": {
+          "precision": 0.938,
+          "recall": 1.0
+        },
+        "wrong_item": {
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "missing_parts": {
+          "precision": 1.0,
+          "recall": 0.933
+        },
+        "not_as_described": {
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "late_delivery": {
+          "precision": 0.882,
+          "recall": 1.0
+        },
+        "not_delivered": {
+          "precision": 1.0,
+          "recall": 0.933
+        },
+        "change_of_mind": {
+          "precision": 1.0,
+          "recall": 1.0
+        },
+        "customer_damage": {
+          "precision": 0.929,
+          "recall": 0.867
+        },
+        "other": {
+          "precision": 1.0,
+          "recall": 1.0
+        }
+      },
+      "mistakes": [
+        {
+          "text": "Nothing arrived. Zero. Paid two weeks ago.",
+          "actual": "not_delivered",
+          "predicted": "late_delivery",
+          "confidence": 0.46
+        },
+        {
+          "text": "The vacuum stopped working after I accidentally sucked up a puddle of water with it.",
+          "actual": "customer_damage",
+          "predicted": "defective",
+          "confidence": 0.46
+        },
+        {
+          "text": "I bought the knife block set and the bread knife isn't in it.",
+          "actual": "missing_parts",
+          "predicted": "customer_damage",
+          "confidence": 0.27
+        },
+        {
+          "text": "I left the blender running empty for too long and burnt the motor out.",
+          "actual": "customer_damage",
+          "predicted": "late_delivery",
+          "confidence": 0.2
+        }
+      ]
+    },
+    "test": {
+      "samples": 150,
+      "accuracy": 0.82,
+      "confidentShare": 0.54,
+      "accuracyWhenConfident": 0.975,
+      "perCategory": {
+        "damaged": {
+          "precision": 0.6,
+          "recall": 1.0
+        },
+        "defective": {
+          "precision": 0.684,
+          "recall": 0.867
+        },
+        "wrong_item": {
+          "precision": 0.778,
+          "recall": 0.933
+        },
+        "missing_parts": {
+          "precision": 1.0,
+          "recall": 0.933
+        },
+        "not_as_described": {
+          "precision": 1.0,
+          "recall": 0.933
+        },
+        "late_delivery": {
+          "precision": 1.0,
+          "recall": 0.8
+        },
+        "not_delivered": {
+          "precision": 0.833,
+          "recall": 0.667
+        },
+        "change_of_mind": {
+          "precision": 0.923,
+          "recall": 0.8
+        },
+        "customer_damage": {
+          "precision": 0.714,
+          "recall": 0.667
+        },
+        "other": {
+          "precision": 1.0,
+          "recall": 0.6
+        }
+      },
+      "mistakes": [
+        {
+          "text": "My son threw the tablet across the room and the screen is broken.",
+          "actual": "customer_damage",
+          "predicted": "damaged",
+          "confidence": 0.68
+        },
+        {
+          "text": "Impulse buy, regret it.",
+          "actual": "change_of_mind",
+          "predicted": "customer_damage",
+          "confidence": 0.65
+        },
+        {
+          "text": "The parcel sat at the depot for 8 days before it was finally delivered.",
+          "actual": "late_delivery",
+          "predicted": "not_delivered",
+          "confidence": 0.58
+        },
+        {
+          "text": "Hi there, can I change the delivery address on an order I placed yesterday?",
+          "actual": "other",
+          "predicted": "not_delivered",
+          "confidence": 0.58
+        },
+        {
+          "text": "Order #48213",
+          "actual": "other",
+          "predicted": "wrong_item",
+          "confidence": 0.52
+        },
+        {
+          "text": "This is not original, the logo is printed wrong and the box is a cheap copy.",
+          "actual": "not_as_described",
+          "predicted": "wrong_item",
+          "confidence": 0.5
+        },
+        {
+          "text": "The scooter deck bent when I rode it off a kerb that was too high.",
+          "actual": "customer_damage",
+          "predicted": "damaged",
+          "confidence": 0.49
+        },
+        {
+          "text": "we broke the glass door of the cabinet when we were moving it to another room",
+          "actual": "customer_damage",
+          "predicted": "damaged",
+          "confidence": 0.47
+        },
+        {
+          "text": "it's not right",
+          "actual": "other",
+          "predicted": "change_of_mind",
+          "confidence": 0.46
+        },
+        {
+          "text": "I overtightened the screws when putting the bed together and split the wood.",
+          "actual": "customer_damage",
+          "predicted": "damaged",
+          "confidence": 0.44
+        },
+        {
+          "text": "The carrier says the package was lost in their warehouse.",
+          "actual": "not_delivered",
+          "predicted": "damaged",
+          "confidence": 0.44
+        },
+        {
+          "text": "Very bad experience overall, will not shop here again.",
+          "actual": "other",
+          "predicted": "defective",
+          "confidence": 0.41
+        },
+        {
+          "text": "The Christmas presents arrived on the 28th.",
+          "actual": "late_delivery",
+          "predicted": "damaged",
+          "confidence": 0.39
+        },
+        {
+          "text": "tracking number doesnt work and nothing came",
+          "actual": "not_delivered",
+          "predicted": "defective",
+          "confidence": 0.37
+        },
+        {
+          "text": "I haven't received anything.",
+          "actual": "not_delivered",
+          "predicted": "wrong_item",
+          "confidence": 0.36
+        },
+        {
+          "text": "The driver marked it 'handed to resident' but nobody here received it.",
+          "actual": "not_delivered",
+          "predicted": "damaged",
+          "confidence": 0.35
+        },
+        {
+          "text": "Ordered for a work presentation on Thursday, the projector came on Monday.",
+          "actual": "late_delivery",
+          "predicted": "defective",
+          "confidence": 0.29
+        },
+        {
+          "text": "Printer jams on every single page, and I'm using the paper it recommends.",
+          "actual": "defective",
+          "predicted": "customer_damage",
+          "confidence": 0.28
+        },
+        {
+          "text": "Don't like the smell of the candle, it's not broken or anything.",
+          "actual": "change_of_mind",
+          "predicted": "damaged",
+          "confidence": 0.26
+        },
+        {
+          "text": "The label on the jeans says W34, my order was W32.",
+          "actual": "wrong_item",
+          "predicted": "customer_damage",
+          "confidence": 0.26
+        },
+        {
+          "text": "?",
+          "actual": "other",
+          "predicted": "defective",
+          "confidence": 0.25
+        },
+        {
+          "text": "Lost in the post.",
+          "actual": "not_delivered",
+          "predicted": "damaged",
+          "confidence": 0.25
+        },
+        {
+          "text": "The cushion got a burn mark from my cigarette.",
+          "actual": "customer_damage",
+          "predicted": "wrong_item",
+          "confidence": 0.23
+        },
+        {
+          "text": "Half the allen keys and bolts aren't in the pack, I counted against the parts list.",
+          "actual": "missing_parts",
+          "predicted": "defective",
+          "confidence": 0.22
+        },
+        {
+          "text": "asdfgh",
+          "actual": "other",
+          "predicted": "defective",
+          "confidence": 0.22
+        },
+        {
+          "text": "We're moving abroad and can't take the mattress with us.",
+          "actual": "change_of_mind",
+          "predicted": "damaged",
+          "confidence": 0.19
+        },
+        {
+          "text": "The fridge isn't cooling, food goes off within a day. It was installed by your own technicians.",
+          "actual": "defective",
+          "predicted": "customer_damage",
+          "confidence": 0.19
+        }
+      ]
+    }
   },
   "risk": {
-    "rocAuc": 0.775,
-    "precision": 0.767,
-    "recall": 0.148,
-    "precisionAtDecisionThreshold": 0.563,
-    "recallAtDecisionThreshold": 0.258,
+    "rocAuc": 0.784,
+    "precisionAtDecisionThreshold": 0.584,
+    "recallAtDecisionThreshold": 0.347,
     "decisionThreshold": 0.35,
-    "positiveRate": 0.124,
+    "positiveRate": 0.136,
     "testSamples": 1250
   }
 }

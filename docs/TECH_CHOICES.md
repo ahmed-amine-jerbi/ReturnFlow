@@ -18,8 +18,9 @@ part uses the tool that suits its job, and they talk over plain HTTP and JSON.
 - **One language for everything** (for example Python for API and model, or TypeScript end to
   end). Simpler to run, but it would either weaken the typed state machine or move the model to
   a weaker ML ecosystem.
-- **Letting the model decide.** Rejected: an auto-reject from a model trained on synthetic data
-  isn't defensible to a customer. The model only recommends `Approve` or `Review`.
+- **Letting the model decide.** Rejected: the model says what a claim is about and how sure it is,
+  and the policy decides from configured coverage rules. Automatic rejections need a higher
+  confidence than approvals, and the customer can always ask for a person.
 - **A message broker between API and AI.** RabbitMQ or Redis streams would let workers scale out,
   but one instance doesn't need it. The in-memory queue recovers pending claims from the database
   on restart.

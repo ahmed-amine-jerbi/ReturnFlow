@@ -1,5 +1,3 @@
-from typing import Literal
-
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 
@@ -21,15 +19,15 @@ class AnalyzeRequest(CamelModel):
     claim_id: int
     description: str = Field("", max_length=1000)
     amount_requested: float = Field(..., ge=0)
-    history: History = Field(default_factory=History)
+    history: History = Field(default_factory=lambda: History.model_validate({}))
 
 
 class AnalyzeResponse(CamelModel):
+    """What the claim is about and how risky it looks. The API's policy turns this into a decision."""
+
     claim_id: int
     category: str
-    category_confidence: float
-    risk_score: float
-    confidence: float
-    recommended_outcome: Literal["Approve", "Review"]  # the AI never rejects on its own
-    reasons: list[str]
+    confidence: float = Field(description="Probability that the category is right, 0 to 1")
+    risk_score: float = Field(description="Probability that the claim is suspicious, 0 to 1")
+    reasons: list[str] = Field(description="Plain-language factors that raised the risk score")
     model_version: str

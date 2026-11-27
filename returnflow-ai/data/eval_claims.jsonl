@@ -1,0 +1,300 @@
+{"text": "The box was crushed and the lamp shade inside is bent out of shape.", "label": "damaged"}
+{"text": "mug arrived in 3 pieces", "label": "damaged"}
+{"text": "Screen was cracked when I opened the package, the laptop had never even been switched on.", "label": "damaged"}
+{"text": "The courier threw the parcel over my gate and now the guitar neck is snapped.", "label": "damaged"}
+{"text": "Bottle of shampoo leaked all over the box during shipping, half of it is gone.", "label": "damaged"}
+{"text": "Fridge was delivered with a big dent in the door. The delivery guys must have banged it on the way in.", "label": "damaged"}
+{"text": "arrived scratched all over the top, looks like it was dragged across concrete", "label": "damaged"}
+{"text": "Hi, the glass tabletop came shattered, the packaging was soaked and torn.", "label": "damaged"}
+{"text": "One leg of the chair was broken clean off, it was like that in the box.", "label": "damaged"}
+{"text": "received the vase broken. very dissapointed.", "label": "damaged"}
+{"text": "The delivery driver dropped the TV off the back of the van right in front of me and the panel is cracked.", "label": "damaged"}
+{"text": "Olive oil bottle smashed in transit, everything in the box is covered in oil.", "label": "damaged"}
+{"text": "Phone case arrived with a crack across the back, and the outer box was all squashed.", "label": "damaged"}
+{"text": "Sofa has a tear in the fabric on the arm, the plastic wrap was already ripped when it arrived.", "label": "damaged"}
+{"text": "My blender jug came cracked at the base, straight out of the box.", "label": "damaged"}
+{"text": "Dented. The kettle is dented on the side and the box had a huge hole in it.", "label": "damaged"}
+{"text": "parcel was left out in the rain by the driver and the book pages are all warped from water", "label": "damaged"}
+{"text": "The mirror was cracked when it arrived, the box had fragile stickers but looked like it had been kicked.", "label": "damaged"}
+{"text": "Arrived damaged", "label": "damaged"}
+{"text": "the headband on the headphones was already snapped when i unboxed them, never even worn", "label": "damaged"}
+{"text": "Picture frame glass smashed on arrival.", "label": "damaged"}
+{"text": "The paint on the bike frame is chipped and the handlebar is bent, it was like this when the courier handed it over.", "label": "damaged"}
+{"text": "Good morning, the plate set arrive with two plate broken inside the box.", "label": "damaged"}
+{"text": "Watch face is scratched straight out of the package, clearly happened before it got to me.", "label": "damaged"}
+{"text": "The perfume cap was broken and it leaked during delivery, the whole box stinks of it.", "label": "damaged"}
+{"text": "Monitor stand is bent and the box was crushed on one corner from the delivery.", "label": "damaged"}
+{"text": "Ceramic planter arrived with a big chip out of the rim.", "label": "damaged"}
+{"text": "the dresser drawer front is split and the corner is smashed in, it came like that", "label": "damaged"}
+{"text": "Your delivery company crushed my order, the speaker grille is caved in.", "label": "damaged"}
+{"text": "Suitcase wheel snapped off, the outer box was torn open when it got to me.", "label": "damaged"}
+{"text": "Won't turn on.", "label": "defective"}
+{"text": "The headphones stopped charging after 5 days of normal use.", "label": "defective"}
+{"text": "Blender motor gives off a burning smell and cuts out after 10 seconds, I'm using it exactly as the manual says.", "label": "defective"}
+{"text": "Laptop keeps shutting down randomly, even when plugged in. It's only two weeks old.", "label": "defective"}
+{"text": "the left earbud has no sound, right one works fine", "label": "defective"}
+{"text": "Phone battery drains from 100 to 0 in about 3 hours even when I'm not using it.", "label": "defective"}
+{"text": "Kettle doesn't heat up at all. The light comes on but nothing happens.", "label": "defective"}
+{"text": "The zip on the jacket broke the second time I did it up, I wasn't pulling hard or anything.", "label": "defective"}
+{"text": "Lamp flickers constantly, I've tried 3 different bulbs and two sockets.", "label": "defective"}
+{"text": "The toy car's remote doesnt work even with brand new batteries.", "label": "defective"}
+{"text": "Sole of the shoes started peeling off after one week of normal walking.", "label": "defective"}
+{"text": "Smartwatch screen freezes every few hours and needs a hard reset.", "label": "defective"}
+{"text": "The seam on the bag came apart after a week, I only carried a few books in it.", "label": "defective"}
+{"text": "Printer jams on every single page, and I'm using the paper it recommends.", "label": "defective"}
+{"text": "Vacuum cleaner lost suction after 3 uses, filter is clean and nothing is blocked.", "label": "defective"}
+{"text": "hairdryer cuts out after a minute and then wont turn back on until it cools down", "label": "defective"}
+{"text": "Keyboard: the E and R keys don't register half the time.", "label": "defective"}
+{"text": "Mouse double-clicks on its own.", "label": "defective"}
+{"text": "It worked for a month and then just died. Nothing happened to it, one morning it simply wouldn't turn on.", "label": "defective"}
+{"text": "The coffee machine leaks water from underneath every time I make a coffee.", "label": "defective"}
+{"text": "Speaker has a constant buzzing noise even at zero volume.", "label": "defective"}
+{"text": "bluetooth keeps disconnecting every 5 min, tried with 2 different phones", "label": "defective"}
+{"text": "The fridge isn't cooling, food goes off within a day. It was installed by your own technicians.", "label": "defective"}
+{"text": "The charger that came in the box gets extremely hot and has now stopped working altogether.", "label": "defective"}
+{"text": "Electric toothbrush won't hold a charge anymore after 2 weeks.", "label": "defective"}
+{"text": "Dead on arrival - plugged it in and nothing, no lights, no sound.", "label": "defective"}
+{"text": "The camera lens won't focus, every photo is blurry whatever setting I use.", "label": "defective"}
+{"text": "Robot vacuum just spins in circles and can't map the room, I've factory reset it twice.", "label": "defective"}
+{"text": "tablet touchscreen doesnt respond in the bottom part of the screen, no cracks or marks on it", "label": "defective"}
+{"text": "The office chair sinks to the lowest position within minutes of sitting down. Assembled it exactly per the instructions.", "label": "defective"}
+{"text": "I ordered size 9 and got size 7.", "label": "wrong_item"}
+{"text": "Ordered the black one, received a white one.", "label": "wrong_item"}
+{"text": "You sent me an iPhone 14 case but I ordered one for the iPhone 15.", "label": "wrong_item"}
+{"text": "wrong item. ordered a blender got a toaster", "label": "wrong_item"}
+{"text": "The box contains a queen duvet cover, my order says king.", "label": "wrong_item"}
+{"text": "Received a men's jacket, I ordered the women's version.", "label": "wrong_item"}
+{"text": "I ordered the 1TB model and the box label on the laptop I got says 512GB.", "label": "wrong_item"}
+{"text": "This isn't my order at all, the package has someone else's dog bed in it.", "label": "wrong_item"}
+{"text": "Ordered blue sneakers in 42, got red ones in 42.", "label": "wrong_item"}
+{"text": "The label on the jeans says W34, my order was W32.", "label": "wrong_item"}
+{"text": "Got a bookshelf in the box instead of the desk I bought.", "label": "wrong_item"}
+{"text": "hi i order the pink color but come green one", "label": "wrong_item"}
+{"text": "Sent the wrong model, I asked for the X200 and this is the X100.", "label": "wrong_item"}
+{"text": "The mug says 'Best Dad' but I ordered the 'Best Mum' one.", "label": "wrong_item"}
+{"text": "Ordered the cordless drill, received the corded version.", "label": "wrong_item"}
+{"text": "My order was for the oak finish and you delivered walnut.", "label": "wrong_item"}
+{"text": "Wrong size: the T-shirt is an XL, I selected L and the confirmation email says L.", "label": "wrong_item"}
+{"text": "Received a charger with a UK plug, I ordered the EU one.", "label": "wrong_item"}
+{"text": "I ordered the tumbler set and received wine glasses.", "label": "wrong_item"}
+{"text": "Package had a lamp in it. I ordered a rug.", "label": "wrong_item"}
+{"text": "Got the 32 inch monitor, I paid for the 27 inch.", "label": "wrong_item"}
+{"text": "This is the kids version of the headphones, I ordered the adult over-ear ones.", "label": "wrong_item"}
+{"text": "The book is the German edition, I ordered the English one.", "label": "wrong_item"}
+{"text": "You sent size M but my order clearly says S.", "label": "wrong_item"}
+{"text": "received wrong flavour of protein powder, chocolate instead of vanilla", "label": "wrong_item"}
+{"text": "I ordered a 2-seater sofa and the delivery team brought a 3-seater.", "label": "wrong_item"}
+{"text": "The phone I got is the 128GB grey, I ordered the 256GB silver.", "label": "wrong_item"}
+{"text": "Not my item. It's a completely different brand of coffee machine from the one I chose.", "label": "wrong_item"}
+{"text": "The duvet I received is the summer weight, my order was for the winter tog.", "label": "wrong_item"}
+{"text": "Wrong colour sent.", "label": "wrong_item"}
+{"text": "The bookshelf came without the screws.", "label": "missing_parts"}
+{"text": "Charging cable missing from the box, there's a slot for it in the insert but it's empty.", "label": "missing_parts"}
+{"text": "Only 5 of the 6 glasses were in the box.", "label": "missing_parts"}
+{"text": "The table arrived with three legs, it needs four.", "label": "missing_parts"}
+{"text": "no manual included, cant figure out how to set it up", "label": "missing_parts"}
+{"text": "I ordered 3 items and only 2 came in the parcel.", "label": "missing_parts"}
+{"text": "The drawer handles are missing.", "label": "missing_parts"}
+{"text": "Earbuds case was in the box but only one earbud.", "label": "missing_parts"}
+{"text": "Lego set is missing bag number 4.", "label": "missing_parts"}
+{"text": "The remote control isn't in the box with the TV.", "label": "missing_parts"}
+{"text": "Missing the lid for the slow cooker.", "label": "missing_parts"}
+{"text": "The cot came with no mattress base board, the instructions show it should be included.", "label": "missing_parts"}
+{"text": "Got the sofa but the seat cushions weren't delivered with it.", "label": "missing_parts"}
+{"text": "parts missing", "label": "missing_parts"}
+{"text": "The wardrobe is missing one of its doors, I've only got one of the two.", "label": "missing_parts"}
+{"text": "The bed frame was supposed to come in two boxes, I only got the box with the headboard.", "label": "missing_parts"}
+{"text": "Hi, the camera came without the battery.", "label": "missing_parts"}
+{"text": "Half the allen keys and bolts aren't in the pack, I counted against the parts list.", "label": "missing_parts"}
+{"text": "The pair of curtains only has one curtain.", "label": "missing_parts"}
+{"text": "My order of 4 cushion covers arrived with 3.", "label": "missing_parts"}
+{"text": "Blender came without the blade assembly.", "label": "missing_parts"}
+{"text": "the strap for the bag is not in the package", "label": "missing_parts"}
+{"text": "I bought the knife block set and the bread knife isn't in it.", "label": "missing_parts"}
+{"text": "Puzzle is missing pieces, 997 out of 1000, and the bag was sealed.", "label": "missing_parts"}
+{"text": "The printer came without the starter ink cartridges that are supposed to be in the box.", "label": "missing_parts"}
+{"text": "No power adapter for the router in the box.", "label": "missing_parts"}
+{"text": "One shoe in the box. Just one.", "label": "missing_parts"}
+{"text": "Desk delivered but the cable tray and two of the brackets aren't in there.", "label": "missing_parts"}
+{"text": "Phone arrived but the case I ordered in the same order wasn't in the parcel.", "label": "missing_parts"}
+{"text": "The dinner set should be 12 pieces, there are 10.", "label": "missing_parts"}
+{"text": "Listing says 100% leather, it's clearly plastic.", "label": "not_as_described"}
+{"text": "The sofa is much more grey than the beige in the photos.", "label": "not_as_described"}
+{"text": "The rug is 120x170, the listing said 160x230.", "label": "not_as_described"}
+{"text": "These are obviously fake AirPods, the serial number doesn't exist on Apple's site.", "label": "not_as_described"}
+{"text": "Photos show a solid wood table, what came is chipboard with a wood-effect sticker.", "label": "not_as_described"}
+{"text": "the dress is way shorter than the length on the size chart, i measured it", "label": "not_as_described"}
+{"text": "Advertised as waterproof, but the jacket soaks through in light rain.", "label": "not_as_described"}
+{"text": "Listing said 8GB RAM, system info shows 4GB.", "label": "not_as_described"}
+{"text": "The quality is nothing like the pictures, the fabric is thin and see-through.", "label": "not_as_described"}
+{"text": "Description says Bluetooth 5.3, the box and the settings both say 4.2.", "label": "not_as_described"}
+{"text": "Mug is listed as 500ml but it holds about 250, it's half the size it looks in the photos.", "label": "not_as_described"}
+{"text": "The colour is supposed to be navy but it's basically bright royal blue.", "label": "not_as_described"}
+{"text": "Not real gold plated like the description says, it turned my finger green in a day.", "label": "not_as_described"}
+{"text": "The lamp is described as dimmable but there's no way to dim it, no dial, no app, nothing.", "label": "not_as_described"}
+{"text": "Sold as noise cancelling. It has no noise cancelling, there isn't even a setting for it.", "label": "not_as_described"}
+{"text": "This is not original, the logo is printed wrong and the box is a cheap copy.", "label": "not_as_described"}
+{"text": "the shoes are much narrower than the description which says wide fit", "label": "not_as_described"}
+{"text": "Item looks nothing like the listing.", "label": "not_as_described"}
+{"text": "It's sold as stainless steel but it's already rusting after one wash, it's clearly cheap coated metal.", "label": "not_as_described"}
+{"text": "The product page lists a backlit keyboard, this laptop doesn't have backlighting.", "label": "not_as_described"}
+{"text": "Says 4K on the listing, it's a 1080p screen.", "label": "not_as_described"}
+{"text": "Description says the bag fits a 15.6 inch laptop, mine doesn't fit and the inside measures only 14 inches.", "label": "not_as_described"}
+{"text": "the jumper is acrylic, the page says merino wool", "label": "not_as_described"}
+{"text": "Much smaller than the listed dimensions - the desk is 80cm wide, not 120cm.", "label": "not_as_described"}
+{"text": "The 'real marble' coasters are resin.", "label": "not_as_described"}
+{"text": "The listing says the blender has 6 speed settings, it only has 2.", "label": "not_as_described"}
+{"text": "The cream colour in the photos is actually a sickly yellow in real life.", "label": "not_as_described"}
+{"text": "counterfeit item. the hologram sticker is missing and the stitching is different from the genuine one.", "label": "not_as_described"}
+{"text": "The listing says machine washable, the label inside says dry clean only.", "label": "not_as_described"}
+{"text": "The trousers are about 10cm longer than the size guide says they should be for my size.", "label": "not_as_described"}
+{"text": "It arrived 10 days after the promised date.", "label": "late_delivery"}
+{"text": "Came the day after the birthday party, so it's no use to me now.", "label": "late_delivery"}
+{"text": "Delivery was supposed to be Monday, it showed up on Friday.", "label": "late_delivery"}
+{"text": "paid for next day delivery and it took a week", "label": "late_delivery"}
+{"text": "The wedding dress arrived after the wedding.", "label": "late_delivery"}
+{"text": "Arrived way too late.", "label": "late_delivery"}
+{"text": "I needed the costume for Halloween and it came on November 3rd.", "label": "late_delivery"}
+{"text": "I paid for express shipping and the parcel arrived 5 days late. I want the shipping fee back at the very least.", "label": "late_delivery"}
+{"text": "Got it eventually but three weeks later than the estimate on the website.", "label": "late_delivery"}
+{"text": "The Christmas presents arrived on the 28th.", "label": "late_delivery"}
+{"text": "Finally received it today, it was meant to be here last Tuesday.", "label": "late_delivery"}
+{"text": "took over a month to get here when it said 3-5 days", "label": "late_delivery"}
+{"text": "The tent arrived the day after we came back from our camping trip.", "label": "late_delivery"}
+{"text": "My order was delayed twice and only turned up after I'd left on holiday.", "label": "late_delivery"}
+{"text": "Delivered late.", "label": "late_delivery"}
+{"text": "It did turn up, but 12 days past the guaranteed delivery date.", "label": "late_delivery"}
+{"text": "The school shoes came after term had already started.", "label": "late_delivery"}
+{"text": "The parcel sat at the depot for 8 days before it was finally delivered.", "label": "late_delivery"}
+{"text": "Ordered for a work presentation on Thursday, the projector came on Monday.", "label": "late_delivery"}
+{"text": "Received it but super late, promised by the 5th, came on the 19th.", "label": "late_delivery"}
+{"text": "Hi, the item arrived but much later than you said. I don't need it anymore.", "label": "late_delivery"}
+{"text": "the package come very late, 15 days more than you say", "label": "late_delivery"}
+{"text": "The plant pot I ordered as a Mother's Day gift came 4 days after Mother's Day.", "label": "late_delivery"}
+{"text": "Your 'guaranteed by Friday' delivery came the following Wednesday.", "label": "late_delivery"}
+{"text": "Arrived after the event date I selected at checkout.", "label": "late_delivery"}
+{"text": "Tracking was stuck for ages and it only got to me yesterday, a week after the expected date.", "label": "late_delivery"}
+{"text": "The baby monitor arrived three weeks after the date we were given, we'd had to borrow one in the meantime.", "label": "late_delivery"}
+{"text": "Very slow shipping, came 9 days late.", "label": "late_delivery"}
+{"text": "delivery came late and the driver didnt even apologise", "label": "late_delivery"}
+{"text": "The suit for my interview was delivered the day after the interview.", "label": "late_delivery"}
+{"text": "Still waiting, nothing has arrived.", "label": "not_delivered"}
+{"text": "Tracking says delivered but there's nothing at my door or with my neighbours.", "label": "not_delivered"}
+{"text": "My parcel never came.", "label": "not_delivered"}
+{"text": "It's been 6 weeks and the tracking hasn't moved from 'in transit'.", "label": "not_delivered"}
+{"text": "The courier delivered it to the wrong address, a house on a different street.", "label": "not_delivered"}
+{"text": "never recieved my order", "label": "not_delivered"}
+{"text": "The parcel was marked as delivered at 2pm, I was home all day and no one came.", "label": "not_delivered"}
+{"text": "The carrier says the package was lost in their warehouse.", "label": "not_delivered"}
+{"text": "Order still not here and it's three weeks past the date.", "label": "not_delivered"}
+{"text": "The photo proof of delivery shows a front door that isn't mine.", "label": "not_delivered"}
+{"text": "I haven't received anything.", "label": "not_delivered"}
+{"text": "Tracking shows it was returned to sender, I never got it.", "label": "not_delivered"}
+{"text": "Package has been stuck in customs for over a month and the courier has stopped replying.", "label": "not_delivered"}
+{"text": "Delivered to the wrong flat, and the neighbour says they don't have it either.", "label": "not_delivered"}
+{"text": "the item never showed up, its been 20 days", "label": "not_delivered"}
+{"text": "Where's my order? It says delivered but I never got it.", "label": "not_delivered"}
+{"text": "Got an email saying it was delivered to a parcel locker, but the locker was empty when I opened it.", "label": "not_delivered"}
+{"text": "The driver marked it 'handed to resident' but nobody here received it.", "label": "not_delivered"}
+{"text": "Nothing arrived. Zero. Paid two weeks ago.", "label": "not_delivered"}
+{"text": "tracking number doesnt work and nothing came", "label": "not_delivered"}
+{"text": "My order shows as delivered in a city I don't even live in.", "label": "not_delivered"}
+{"text": "Courier claims they left it in my safe place but it's not there, and our building cameras show no delivery that day.", "label": "not_delivered"}
+{"text": "Been waiting since October for the sofa and the delivery company has no record of it.", "label": "not_delivered"}
+{"text": "Lost in the post.", "label": "not_delivered"}
+{"text": "I've had three 'out for delivery' notifications and it still never turned up.", "label": "not_delivered"}
+{"text": "The parcel was sent to my old address even though I updated it before ordering.", "label": "not_delivered"}
+{"text": "Hello, my package is lost, the shipping company confirmed it.", "label": "not_delivered"}
+{"text": "The box never reached me, tracking stopped updating 4 weeks ago at a sorting centre.", "label": "not_delivered"}
+{"text": "didnt get it", "label": "not_delivered"}
+{"text": "Neighbours, front desk, safe place - I've checked everywhere, the order marked as delivered is not here.", "label": "not_delivered"}
+{"text": "I don't need it anymore.", "label": "change_of_mind"}
+{"text": "Changed my mind.", "label": "change_of_mind"}
+{"text": "I picked the wrong size by mistake when ordering, I meant to choose a large.", "label": "change_of_mind"}
+{"text": "The jacket fits fine but I just don't like how it looks on me.", "label": "change_of_mind"}
+{"text": "Found the same blender £30 cheaper elsewhere.", "label": "change_of_mind"}
+{"text": "Accidentally ordered two of the same lamp.", "label": "change_of_mind"}
+{"text": "it's a bit too tight on me, but it is the size I ordered", "label": "change_of_mind"}
+{"text": "The colour doesn't go with my living room after all.", "label": "change_of_mind"}
+{"text": "The gift wasn't wanted, my sister already has one.", "label": "change_of_mind"}
+{"text": "My husband bought the same headphones the same day, we only need one pair.", "label": "change_of_mind"}
+{"text": "The sofa is too big for our flat, we measured the space wrong.", "label": "change_of_mind"}
+{"text": "Not what I expected, nothing wrong with it, it's just not for me.", "label": "change_of_mind"}
+{"text": "i clicked buy by accident", "label": "change_of_mind"}
+{"text": "The shoes are perfectly fine but they hurt my feet, I have wide feet and should have picked a different style.", "label": "change_of_mind"}
+{"text": "We're moving abroad and can't take the mattress with us.", "label": "change_of_mind"}
+{"text": "Bought it for a project that's been cancelled.", "label": "change_of_mind"}
+{"text": "The laptop works perfectly, I've just decided I'd rather have a tablet.", "label": "change_of_mind"}
+{"text": "My son wanted a different colour of the toy, this one is fine though.", "label": "change_of_mind"}
+{"text": "Doesn't fit me, I need to go up a size.", "label": "change_of_mind"}
+{"text": "Saw it on sale for half the price a week after I bought it.", "label": "change_of_mind"}
+{"text": "Don't like the smell of the candle, it's not broken or anything.", "label": "change_of_mind"}
+{"text": "Duplicate order, please refund one.", "label": "change_of_mind"}
+{"text": "The dress is lovely but it doesn't suit my body shape.", "label": "change_of_mind"}
+{"text": "Decided to keep my old phone instead.", "label": "change_of_mind"}
+{"text": "ordered this for my mum but she prefers her old kettle", "label": "change_of_mind"}
+{"text": "The rug is exactly as pictured, I just think it looks wrong in the room.", "label": "change_of_mind"}
+{"text": "I bought a gaming chair but I'm going to keep using my office chair after all.", "label": "change_of_mind"}
+{"text": "Impulse buy, regret it.", "label": "change_of_mind"}
+{"text": "The trousers are a little long for me, I'm short, nothing wrong with them.", "label": "change_of_mind"}
+{"text": "We got a better offer from another shop and want to return this one unopened.", "label": "change_of_mind"}
+{"text": "I dropped my phone the day after it arrived and the screen cracked.", "label": "customer_damage"}
+{"text": "My dog chewed through the charging cable.", "label": "customer_damage"}
+{"text": "Spilled coffee on the keyboard and now some of the keys don't work.", "label": "customer_damage"}
+{"text": "My son threw the tablet across the room and the screen is broken.", "label": "customer_damage"}
+{"text": "I washed the wool jumper on a hot cycle and it shrank to a child's size.", "label": "customer_damage"}
+{"text": "Sat on my glasses by accident and the frame snapped.", "label": "customer_damage"}
+{"text": "I knocked the lamp off the bedside table and the base cracked.", "label": "customer_damage"}
+{"text": "I used the charger from my old phone and now the headphones won't charge at all.", "label": "customer_damage"}
+{"text": "Cracked the sink while I was installing it myself, the wrench slipped.", "label": "customer_damage"}
+{"text": "My cat knocked the vase off the shelf.", "label": "customer_damage"}
+{"text": "stepped on the earbuds case and its broken now", "label": "customer_damage"}
+{"text": "I put the hand-wash-only mug in the dishwasher and the print came off.", "label": "customer_damage"}
+{"text": "The cushion got a burn mark from my cigarette.", "label": "customer_damage"}
+{"text": "My toddler pulled the TV off the stand and the screen is cracked.", "label": "customer_damage"}
+{"text": "I tumble dried the jacket even though the label says not to and the coating has peeled.", "label": "customer_damage"}
+{"text": "The laptop slipped off the sofa onto our tiled floor and now it won't boot.", "label": "customer_damage"}
+{"text": "I left the blender running empty for too long and burnt the motor out.", "label": "customer_damage"}
+{"text": "I overtightened the screws when putting the bed together and split the wood.", "label": "customer_damage"}
+{"text": "The kids were jumping on the sofa and broke one of the springs.", "label": "customer_damage"}
+{"text": "My puppy chewed the corner of the new rug.", "label": "customer_damage"}
+{"text": "Plugged the hairdryer into a 110V socket on holiday and it burned out, it's a 230V model.", "label": "customer_damage"}
+{"text": "I dropped the mixing bowl while washing it up and it cracked.", "label": "customer_damage"}
+{"text": "got caught in the rain with the speaker and now its dead, i know its not waterproof", "label": "customer_damage"}
+{"text": "My daughter drew on the leather bag with permanent marker.", "label": "customer_damage"}
+{"text": "I bleached the shirt to get a stain out and it's ruined.", "label": "customer_damage"}
+{"text": "The scooter deck bent when I rode it off a kerb that was too high.", "label": "customer_damage"}
+{"text": "Spilled red wine on the cream sofa and it won't come out.", "label": "customer_damage"}
+{"text": "The vacuum stopped working after I accidentally sucked up a puddle of water with it.", "label": "customer_damage"}
+{"text": "we broke the glass door of the cabinet when we were moving it to another room", "label": "customer_damage"}
+{"text": "I knocked the monitor over and now there's a line across the screen.", "label": "customer_damage"}
+{"text": "Hi, how do I start a return?", "label": "other"}
+{"text": "Can you tell me where my refund is?", "label": "other"}
+{"text": "I want to return this.", "label": "other"}
+{"text": "Not happy.", "label": "other"}
+{"text": "What's your returns policy for electronics?", "label": "other"}
+{"text": "Please call me back about my order.", "label": "other"}
+{"text": "Problem with my order.", "label": "other"}
+{"text": "I need help.", "label": "other"}
+{"text": "Can I exchange it instead of getting a refund?", "label": "other"}
+{"text": "return", "label": "other"}
+{"text": "asdfgh", "label": "other"}
+{"text": "Is it possible to get a return label emailed to me?", "label": "other"}
+{"text": "Hello, I submitted a claim last week and haven't heard anything back.", "label": "other"}
+{"text": "I'd like to speak to a manager.", "label": "other"}
+{"text": "The product is not ok.", "label": "other"}
+{"text": "Very bad experience overall, will not shop here again.", "label": "other"}
+{"text": "How long does a refund take to show on my card?", "label": "other"}
+{"text": "See attached photos.", "label": "other"}
+{"text": "Same issue as my last claim.", "label": "other"}
+{"text": "Do you do collections or do I need to drop it off at the post office?", "label": "other"}
+{"text": "?", "label": "other"}
+{"text": "Order #48213", "label": "other"}
+{"text": "Just want my money back please.", "label": "other"}
+{"text": "Hi there, can I change the delivery address on an order I placed yesterday?", "label": "other"}
+{"text": "Can I return something I bought in store through the website?", "label": "other"}
+{"text": "I'm not sure what's wrong with it, can someone take a look?", "label": "other"}
+{"text": "something is off with this", "label": "other"}
+{"text": "Thanks for the quick reply yesterday, I'm following up as asked.", "label": "other"}
+{"text": "it's not right", "label": "other"}
+{"text": "Do I need the original packaging to send this back?", "label": "other"}

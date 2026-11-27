@@ -44,16 +44,18 @@ flowchart LR
     C[Customer files claim] --> Q[Queue]
     Q --> AI[AI service: category, risk, reasons]
     AI --> P{Decision policy<br/>plain code}
-    P -->|outside return window| R[Auto-reject by rule]
-    P -->|low risk, high confidence,<br/>small amount| A[Auto-approve]
-    P -->|anything else, or<br/>random spot-check| H[Agent queue]
+    P -->|outside return window, or<br/>not covered and AI sure| R[Auto-reject]
+    P -->|covered, AI sure, low risk,<br/>amount within limit| A[Auto-approve]
+    P -->|AI unsure, risky, large,<br/>unclear, or spot-check| H[Agent queue]
     R -. customer asks for review .-> H
     A -. customer asks for review .-> H
     H --> D[Agent decides]
 ```
 
-- The **AI never decides alone.** It returns a category, a risk score, a confidence, and reasons. It can recommend approval or ask for a human, but it never rejects.
-- The **policy** (`DecisionPolicy.cs`) is deterministic and unit-tested. Thresholds live in `appsettings.json` under `Policy`.
+- The **AI describes, the policy decides.** The AI returns what the claim is about (one of ten categories), how sure it is, a risk score and reasons. It never decides on its own.
+- The **policy** (`DecisionPolicy.cs`) is deterministic and unit-tested. It approves covered claims (arrived damaged, defective, wrong item, missing parts, not as described, late, not delivered, change of mind) and rejects claims the return policy doesn't cover (damage the customer caused), but only when the AI is sure. Rejecting needs more certainty than approving. Coverage lists and thresholds live in `appsettings.json` under `Policy`.
+- A description with no readable words in English, French or German (keyboard mashing, random letters) is rejected as "The description does not say what is wrong". Vague but real text ("refund please") still goes to an agent.
+- Agents only see claims the AI is unsure about, risky or large claims, unclear ones, and a random spot-check.
 - A small share of would-be auto-approvals (`SpotCheckRate`, 5%) goes to a person anyway, to measure the AI's accuracy.
 - If the AI service is down, claims go to an agent instead of failing.
 - Customer text is treated as untrusted data. The model maps text to a label and never follows instructions inside it.
@@ -77,16 +79,25 @@ flowchart LR
 
 The model is trained on **synthetic data**, so the pipeline works end to end without real customer data. `returnflow-ai/models/metrics.json` is written at build time and shown at `GET /model-info` on the AI service.
 
-- The category classifier is evaluated on templates held out from training to reduce duplicate-phrase leakage. Its score is still only a synthetic-data measure, not a real-world accuracy figure.
+- The category classifier (word and letter-fragment features, logistic regression) is trained on generated claims and measured on 300 realistic claims written separately, without access to the training phrases (`returnflow-ai/data/eval_claims.jsonl`). Half of them were used for tuning; the other half was scored once at the end:
+
+  | On the 150 untouched test claims | Result |
+  |---|---|
+  | Classified correctly | 82% |
+  | Confident enough to decide automatically | 54% |
+  | Correct among those automatic decisions | 97.5% |
+
+  The rest go to an agent. The confidence thresholds (0.59 to approve, 0.61 to reject) were chosen on held-out generated claims to keep automatic decisions about 97% correct.
+- Known weak spots: indirect wording ("my son threw it", "impulse buy, regret it"), vague messages and short ones. A model that understands meaning, not just wording, would automate more claims; see the open questions in `docs/CONTEXT.md`.
 - The risk model is a logistic regression with explainable reasons. Its labels come from a hidden rule plus noise, so its metrics only prove the pipeline works.
-- The default automatic-approval risk limit is 0.35; model metrics report risk precision and recall at that same limit. This slightly widens automation while preserving the amount cap, confidence gate, and 5% spot-check.
+- The automatic-approval risk limit is 0.35; model metrics report risk precision and recall at that limit.
 - Before any real use: replace the synthetic data with real labelled claims, re-evaluate, and re-tune the policy thresholds.
 
 ## Configuration
 
 | Setting | Where | Default |
 |---|---|---|
-| `Policy:*` (window, amount limit, risk, confidence, spot-check, on/off switch) | `appsettings.json` | 30 days, 150, 0.35, 0.70, 5%, on |
+| `Policy:*` (window, amount limit, risk limit, approve and reject confidence, spot-check, coverage lists, on/off switch) | `appsettings.json` | 30 days, 600, 0.35, 0.59 / 0.61, 5%, `customer_damage` not covered, on |
 | `Ai:BaseUrl` | env `Ai__BaseUrl` | `http://ai:8000/` in Docker |
 | `JWT_KEY`, `DEMO_MODE`, `DEMO_PASSWORD` | `.env` (copy `.env.example`) | demo values |
 

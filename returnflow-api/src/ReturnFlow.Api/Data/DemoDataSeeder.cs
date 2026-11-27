@@ -12,19 +12,26 @@ public static class DemoDataSeeder
 {
     private static readonly string[] CustomerNames = { "alice", "bob", "chloe", "dina", "emir", "farah" };
 
+    // Same keys as the AI service's categories. Weights roughly follow how often each cause comes up.
     private static readonly string[] Categories =
-        { "damaged", "defective", "wrong_item", "late_delivery", "not_as_described", "change_of_mind", "other" };
+    {
+        "damaged", "defective", "wrong_item", "missing_parts", "not_as_described",
+        "late_delivery", "not_delivered", "change_of_mind", "customer_damage", "other"
+    };
 
-    private static readonly double[] CategoryWeights = { 0.28, 0.18, 0.12, 0.14, 0.10, 0.14, 0.04 };
+    private static readonly double[] CategoryWeights = { 0.22, 0.16, 0.10, 0.06, 0.09, 0.10, 0.05, 0.12, 0.06, 0.04 };
 
     private static readonly string[][] Texts =
     {
         new[] { "The screen arrived cracked", "Box was crushed and the product is broken", "Corner of the item is dented" },
         new[] { "Stopped working after two days", "It does not turn on at all", "Battery drains in an hour" },
         new[] { "I received the wrong color", "You sent a different size than I ordered", "Wrong model in the box" },
-        new[] { "Arrived two weeks late", "Delivery took far longer than promised", "Parcel was delayed ten days" },
+        new[] { "The charger was not in the box", "Only two of the three chairs arrived", "Screws are missing" },
         new[] { "Looks different from the photos", "Material is not as described", "Smaller than the listing said" },
+        new[] { "Arrived two weeks late", "Delivery took far longer than promised", "Parcel was delayed ten days" },
+        new[] { "Tracking says delivered but nothing came", "The parcel is lost", "My order never arrived" },
         new[] { "I changed my mind", "I no longer need it", "Found it cheaper elsewhere" },
+        new[] { "I dropped it and the screen cracked", "Spilled coffee on it", "My dog chewed the cable" },
         new[] { "Please help with my order", "I want my money back" }
     };
 
@@ -41,7 +48,7 @@ public static class DemoDataSeeder
 
         var rng = new Random(2026);
         var now = DateTime.UtcNow;
-        var options = new PolicyOptions();
+        var options = config.GetSection(PolicyOptions.Section).Get<PolicyOptions>() ?? new PolicyOptions();
         var hash = BCrypt.Net.BCrypt.HashPassword(config["Seed:Password"] ?? "ChangeMe123!");
 
         // The one-tap demo customer is an established customer with a clean record, so a clear claim
@@ -89,24 +96,21 @@ public static class DemoDataSeeder
             var risk = forceHuman
                 ? 0.35 + rng.NextDouble() * 0.4
                 : Math.Clamp(Math.Pow(rng.NextDouble(), 2.2) * 0.9 + (amount > 250 ? 0.15 : 0), 0.01, 0.97);
-            var certainty = 1.0 - 2.0 * Math.Min(risk, 1.0 - risk);
-            var confidence = Math.Clamp(0.45 + certainty * 0.4 + rng.NextDouble() * 0.12, 0.4, 0.99);
+            // Claims kept for the queue get an unsure category, so the policy itself routes them to an agent.
+            var confidence = forceHuman ? 0.35 + rng.NextDouble() * 0.2 : 0.45 + rng.NextDouble() * 0.54;
 
             var reasons = new List<string>();
             if (amount > 250) reasons.Add($"High claimed amount ({amount:0})");
             if (risk > 0.45) reasons.Add($"{rng.Next(1, 4)} other claim(s) in the last 30 days");
             if (risk > 0.6) reasons.Add($"{rng.Next(1, 3)} earlier claim(s) were rejected");
 
-            var recommended = risk < 0.30 && category is not ("other" or "change_of_mind") ? "Approve" : "Review";
             var analysis = new AiAnalysis
             {
                 Category = category,
-                CategoryConfidence = Math.Round(0.6 + rng.NextDouble() * 0.38, 3),
-                RiskScore = Math.Round(risk, 3),
                 Confidence = Math.Round(confidence, 3),
-                RecommendedOutcome = forceHuman ? "Review" : recommended,
+                RiskScore = Math.Round(risk, 3),
                 Reasons = reasons,
-                ModelVersion = "synthetic-lr-1.0"
+                ModelVersion = "synthetic-lr-2.0"
             };
 
             var ret = new ReturnRequest
@@ -128,8 +132,6 @@ public static class DemoDataSeeder
             ret.Claims.Add(claim);
 
             var policy = DecisionPolicy.Evaluate(options, purchase, created, amount, analysis, rng.NextDouble());
-            if (forceHuman && policy.Route != ClaimRoute.Human)
-                policy = new PolicyResult(ClaimRoute.Human, "AI asked for a human review");
             claim.RoutingReason = policy.Reason;
 
             if (policy.Route == ClaimRoute.Human)
