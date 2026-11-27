@@ -1,0 +1,18 @@
+[project]
+name = "returnflow-ai"
+version = "1.1.0"
+description = "Claim analysis service for ReturnFlow"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "N", "RUF"]
+# X / X_train for feature matrices is the scikit-learn convention.
+ignore = ["N806"]

@@ -6,7 +6,7 @@ using ReturnFlow.Api.Services;
 namespace ReturnFlow.Api.Workers;
 
 /// <summary>Background worker: picks up new claims so that filing a claim never waits for the AI.</summary>
-public class ClaimWorker(ClaimQueue queue, IServiceScopeFactory scopes, ILogger<ClaimWorker> log) : BackgroundService
+public partial class ClaimWorker(ClaimQueue queue, IServiceScopeFactory scopes, ILogger<ClaimWorker> log) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -23,7 +23,7 @@ public class ClaimWorker(ClaimQueue queue, IServiceScopeFactory scopes, ILogger<
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            log.LogWarning(ex, "Could not recover pending claims at startup");
+            LogRecoveryFailed(log, ex);
         }
 
         try
@@ -38,7 +38,7 @@ public class ClaimWorker(ClaimQueue queue, IServiceScopeFactory scopes, ILogger<
                 }
                 catch (Exception ex) when (ex is not OperationCanceledException)
                 {
-                    log.LogError(ex, "Failed to process claim {ClaimId}", claimId);
+                    LogProcessingFailed(log, ex, claimId);
                 }
             }
         }
@@ -47,4 +47,10 @@ public class ClaimWorker(ClaimQueue queue, IServiceScopeFactory scopes, ILogger<
             // normal shutdown
         }
     }
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Could not recover pending claims at startup")]
+    private static partial void LogRecoveryFailed(ILogger logger, Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Failed to process claim {ClaimId}")]
+    private static partial void LogProcessingFailed(ILogger logger, Exception exception, int claimId);
 }

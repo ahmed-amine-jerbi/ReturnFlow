@@ -1,12 +1,12 @@
-import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { api } from '../lib/api'
-import type { Outcome, StaffClaim } from '../lib/types'
-import { describeClaim, fmtDate, fmtMoney, prettyCategory, timeAgo } from '../lib/format'
+import { useState } from 'react'
 import { AiInsight } from '../components/AiInsight'
 import { ClaimTimeline } from '../components/ClaimTimeline'
-import { Badge, Button, Card, EmptyState, ErrorNote, Field, Loading, Sheet, inputClass } from '../components/ui'
+import { Badge, Button, Card, EmptyState, ErrorNote, Field, inputClass, Loading, Sheet } from '../components/ui'
+import { api } from '../lib/api'
+import { describeClaim, fmtDate, fmtMoney, prettyCategory, timeAgo } from '../lib/format'
 import { useI18n } from '../lib/i18n'
+import type { Outcome, StaffClaim } from '../lib/types'
 
 type Tab = 'queue' | 'done'
 
@@ -40,8 +40,18 @@ export default function ReviewQueue() {
       <p className="mt-1 text-sm text-slate-500">{t('queue.description')}</p>
 
       <div className="mt-5 inline-flex rounded-xl bg-slate-200/70 p-1">
-        {([['queue', t('queue.needsReview', { count: waiting.length })], ['done', t('queue.recentlyDecided')]] as const).map(([key, label]) => (
-          <button key={key} onClick={() => setTab(key)} className={`min-h-10 rounded-lg px-4 text-sm font-semibold transition ${tab === key ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}>
+        {(
+          [
+            ['queue', t('queue.needsReview', { count: waiting.length })],
+            ['done', t('queue.recentlyDecided')],
+          ] as const
+        ).map(([key, label]) => (
+          <button
+            type="button"
+            key={key}
+            onClick={() => setTab(key)}
+            className={`min-h-10 rounded-lg px-4 text-sm font-semibold transition ${tab === key ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
+          >
             {label}
           </button>
         ))}
@@ -50,9 +60,14 @@ export default function ReviewQueue() {
       <div className="mt-5 space-y-3">
         {loading && <Loading />}
         {!loading && list.length === 0 && (
-          <EmptyState title={tab === 'queue' ? t('queue.emptyTitle') : t('queue.noDecisionsTitle')} text={tab === 'queue' ? t('queue.emptyText') : t('queue.noDecisionsText')} />
+          <EmptyState
+            title={tab === 'queue' ? t('queue.emptyTitle') : t('queue.noDecisionsTitle')}
+            text={tab === 'queue' ? t('queue.emptyText') : t('queue.noDecisionsText')}
+          />
         )}
-        {list.map((x) => <QueueRow key={x.claim.id} item={x} onOpen={() => setSelectedId(x.claim.id)} />)}
+        {list.map((x) => (
+          <QueueRow key={x.claim.id} item={x} onOpen={() => setSelectedId(x.claim.id)} />
+        ))}
       </div>
 
       {selected && <DecideSheet item={selected} onClose={() => setSelectedId(null)} />}
@@ -65,9 +80,10 @@ function QueueRow({ item, onOpen }: { item: StaffClaim; onOpen: () => void }) {
   const { claim } = item
   const s = describeClaim(claim, t)
   const risk = claim.aiRiskScore
-  const riskTone = risk == null ? 'bg-slate-300' : risk < 0.3 ? 'bg-emerald-500' : risk < 0.6 ? 'bg-amber-400' : 'bg-rose-500'
+  const riskTone =
+    risk == null ? 'bg-slate-300' : risk < 0.3 ? 'bg-emerald-500' : risk < 0.6 ? 'bg-amber-400' : 'bg-rose-500'
   return (
-    <button onClick={onOpen} className="block w-full text-left">
+    <button type="button" onClick={onOpen} className="block w-full text-left">
       <Card className="rf-fade-up flex items-center gap-4 px-5 py-4 transition hover:border-indigo-300 hover:shadow-md">
         <span className={`h-12 w-1.5 shrink-0 rounded-full ${riskTone}`} title={t('ai.riskLabel')} />
         <div className="min-w-0 flex-1">
@@ -77,11 +93,15 @@ function QueueRow({ item, onOpen }: { item: StaffClaim; onOpen: () => void }) {
             {claim.humanReviewRequested && <Badge tone="amber">{t('queue.customerAsked')}</Badge>}
           </div>
           <p className="mt-0.5 truncate text-sm text-slate-600">{claim.description}</p>
-          <p className="mt-0.5 truncate text-xs text-slate-400">{item.customerEmail} · {prettyCategory(claim.aiCategory, t)}</p>
+          <p className="mt-0.5 truncate text-xs text-slate-400">
+            {item.customerEmail} · {prettyCategory(claim.aiCategory, t)}
+          </p>
         </div>
         <div className="shrink-0 text-right">
           <p className="text-base font-bold tabular-nums text-slate-900">{fmtMoney(claim.amountRequested, language)}</p>
-          <div className="mt-1"><Badge tone={s.tone}>{s.label}</Badge></div>
+          <div className="mt-1">
+            <Badge tone={s.tone}>{s.label}</Badge>
+          </div>
         </div>
       </Card>
     </button>
@@ -116,12 +136,34 @@ function DecideSheet({ item, onClose }: { item: StaffClaim; onClose: () => void 
         {claim.status === 'Open' ? (
           <div className="space-y-3 border-t border-slate-100 pt-5">
             <Field label={t('queue.comment')}>
-              <textarea className={`${inputClass} min-h-20`} maxLength={500} value={comment} onChange={(e) => setComment(e.target.value)} placeholder={t('queue.commentPlaceholder')} />
+              <textarea
+                className={`${inputClass} min-h-20`}
+                maxLength={500}
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder={t('queue.commentPlaceholder')}
+              />
             </Field>
             {decide.isError && <ErrorNote message={(decide.error as Error).message} />}
             <div className="flex gap-3">
-              <Button variant="danger" className="flex-1" busy={decide.isPending && decide.variables === 'Rejected'} disabled={decide.isPending} onClick={() => decide.mutate('Rejected')}>{t('queue.reject')}</Button>
-              <Button variant="success" className="flex-1" busy={decide.isPending && decide.variables === 'Approved'} disabled={decide.isPending} onClick={() => decide.mutate('Approved')}>{t('queue.approve')}</Button>
+              <Button
+                variant="danger"
+                className="flex-1"
+                busy={decide.isPending && decide.variables === 'Rejected'}
+                disabled={decide.isPending}
+                onClick={() => decide.mutate('Rejected')}
+              >
+                {t('queue.reject')}
+              </Button>
+              <Button
+                variant="success"
+                className="flex-1"
+                busy={decide.isPending && decide.variables === 'Approved'}
+                disabled={decide.isPending}
+                onClick={() => decide.mutate('Approved')}
+              >
+                {t('queue.approve')}
+              </Button>
             </div>
           </div>
         ) : (

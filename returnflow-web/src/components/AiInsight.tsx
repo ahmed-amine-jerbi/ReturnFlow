@@ -1,7 +1,7 @@
-import type { Claim } from '../lib/types'
 import { prettyCategory } from '../lib/format'
-import { RiskMeter } from './RiskMeter'
 import { translateAnalysisText, useI18n } from '../lib/i18n'
+import type { Claim } from '../lib/types'
+import { RiskMeter } from './RiskMeter'
 
 /** What the AI saw and why a claim went where it did. Used for customers (read only) and agents. */
 export function AiInsight({ claim }: { claim: Claim }) {
@@ -18,7 +18,9 @@ export function AiInsight({ claim }: { claim: Claim }) {
         </div>
         <div className="text-right">
           <p className="text-xs font-medium uppercase tracking-wide text-slate-500">{t('ai.confidence')}</p>
-          <p className="text-sm font-semibold tabular-nums text-slate-900">{Math.round((claim.aiConfidence ?? 0) * 100)}%</p>
+          <p className="text-sm font-semibold tabular-nums text-slate-900">
+            {Math.round((claim.aiConfidence ?? 0) * 100)}%
+          </p>
         </div>
       </div>
       <RiskMeter risk={claim.aiRiskScore} />
@@ -34,7 +36,8 @@ export function AiInsight({ claim }: { claim: Claim }) {
       )}
       {claim.routingReason && (
         <p className="border-t border-slate-200 pt-3 text-xs text-slate-500">
-          <span className="font-medium text-slate-600">{t('ai.routing')}</span> {translateAnalysisText(claim.routingReason, t)}
+          <span className="font-medium text-slate-600">{t('ai.routing')}</span>{' '}
+          {translateAnalysisText(claim.routingReason, t)}
         </p>
       )}
     </div>

@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite --host",
     "build": "tsc --noEmit && vite build",
-    "preview": "vite preview --host"
+    "preview": "vite preview --host",
+    "lint": "biome check .",
+    "format": "biome check --write ."
   },
   "dependencies": {
     "@tanstack/react-query": "^5.104.5",
@@ -15,6 +17,7 @@
     "recharts": "^3.10.1"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.6.9",
     "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^26.6.5",
     "@types/react": "^19.3.0",

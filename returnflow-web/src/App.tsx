@@ -1,20 +1,34 @@
-import { lazy, Suspense, useEffect, useState, type ReactNode } from 'react'
-import { canSeeKpis, isStaff, useAuth } from './lib/auth'
-import { Badge, Button, Logo } from './components/ui'
+import { lazy, type ReactNode, Suspense, useEffect, useState } from 'react'
+import { Badge, Button, Loading, Logo } from './components/ui'
+import { canSeeKpis, isStaff, type User, useAuth } from './lib/auth'
 import { LanguageSelect, useI18n } from './lib/i18n'
 import Login from './pages/Login'
 import MyReturns from './pages/MyReturns'
 import ReviewQueue from './pages/ReviewQueue'
-import { Loading } from './components/ui'
 
 // The charts library is heavy, so the KPI page is only downloaded when a manager opens it.
 const Dashboard = lazy(() => import('./pages/Dashboard'))
 
 type TabKey = 'returns' | 'queue' | 'kpis'
-interface Tab { key: TabKey; label: string; icon: ReactNode }
+interface Tab {
+  key: TabKey
+  label: string
+  icon: ReactNode
+}
 
 const icon = (d: string) => (
-  <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d={d} /></svg>
+  <svg
+    viewBox="0 0 24 24"
+    className="size-6"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d={d} />
+  </svg>
 )
 const ICONS = {
   returns: icon('M21 8l-9-5-9 5v8l9 5 9-5V8zM3 8l9 5 9-5M12 13v8'),
@@ -24,13 +38,13 @@ const ICONS = {
 
 export default function App() {
   const { user } = useAuth()
-  return user ? <Shell /> : <Login />
+  return user ? <Shell user={user} /> : <Login />
 }
 
-function Shell() {
-  const { user, signOut } = useAuth()
+function Shell({ user }: { user: User }) {
+  const { signOut } = useAuth()
   const { t } = useI18n()
-  const role = user!.role
+  const role = user.role
 
   const tabs: Tab[] = []
   if (canSeeKpis(role)) tabs.push({ key: 'kpis', label: t('nav.kpis'), icon: ICONS.kpis })
@@ -52,7 +66,12 @@ function Shell() {
             <Logo />
             <nav className="hidden gap-1 sm:flex">
               {tabs.map((t) => (
-                <button key={t.key} onClick={() => setTab(t.key)} className={`min-h-10 rounded-lg px-3.5 text-sm font-semibold transition ${tab === t.key ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100'}`}>
+                <button
+                  type="button"
+                  key={t.key}
+                  onClick={() => setTab(t.key)}
+                  className={`min-h-10 rounded-lg px-3.5 text-sm font-semibold transition ${tab === t.key ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100'}`}
+                >
                   {t.label}
                 </button>
               ))}
@@ -60,11 +79,13 @@ function Shell() {
           </div>
           <div className="flex items-center gap-2 sm:gap-3">
             <div className="hidden text-right sm:block">
-              <p className="max-w-48 truncate text-sm font-medium text-slate-900">{user!.email}</p>
+              <p className="max-w-48 truncate text-sm font-medium text-slate-900">{user.email}</p>
             </div>
             <LanguageSelect />
             <Badge tone="indigo">{t(`role.${role}`)}</Badge>
-            <Button variant="ghost" onClick={signOut} className="!min-h-10 !px-3">{t('nav.signOut')}</Button>
+            <Button variant="ghost" onClick={signOut} className="!min-h-10 !px-3">
+              {t('nav.signOut')}
+            </Button>
           </div>
         </div>
       </header>
@@ -80,9 +101,17 @@ function Shell() {
       </main>
 
       {tabs.length > 1 && (
-        <nav className="fixed inset-x-0 bottom-0 z-30 grid border-t border-slate-200 bg-white/95 backdrop-blur safe-bottom sm:hidden" style={{ gridTemplateColumns: `repeat(${tabs.length}, 1fr)` }}>
+        <nav
+          className="fixed inset-x-0 bottom-0 z-30 grid border-t border-slate-200 bg-white/95 backdrop-blur safe-bottom sm:hidden"
+          style={{ gridTemplateColumns: `repeat(${tabs.length}, 1fr)` }}
+        >
           {tabs.map((t) => (
-            <button key={t.key} onClick={() => setTab(t.key)} className={`flex min-h-14 flex-col items-center justify-center gap-0.5 text-xs font-semibold ${tab === t.key ? 'text-indigo-600' : 'text-slate-500'}`}>
+            <button
+              type="button"
+              key={t.key}
+              onClick={() => setTab(t.key)}
+              className={`flex min-h-14 flex-col items-center justify-center gap-0.5 text-xs font-semibold ${tab === t.key ? 'text-indigo-600' : 'text-slate-500'}`}
+            >
               {t.icon}
               {t.label}
             </button>

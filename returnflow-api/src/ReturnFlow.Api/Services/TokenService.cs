@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -17,7 +18,7 @@ public class TokenService(IConfiguration config)
         {
             Subject = new ClaimsIdentity(new[]
             {
-                new Claim("sub", user.Id.ToString()),
+                new Claim("sub", user.Id.ToString(CultureInfo.InvariantCulture)),
                 new Claim("email", user.Email),
                 new Claim("role", user.Role.ToString())
             }),

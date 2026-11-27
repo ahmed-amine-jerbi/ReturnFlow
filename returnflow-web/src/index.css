@@ -5,14 +5,48 @@
   color-scheme: light;
 }
 
-html, body, #root { min-height: 100%; }
-body { background: #f1f5f9; color: #0f172a; -webkit-tap-highlight-color: transparent; }
+html,
+body,
+#root {
+  min-height: 100%;
+}
+body {
+  background: #f1f5f9;
+  color: #0f172a;
+  -webkit-tap-highlight-color: transparent;
+}
 
 /* Space for the phone's bottom navigation and notch */
-.safe-bottom { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 0.25rem); }
-.safe-top { padding-top: env(safe-area-inset-top, 0px); }
+.safe-bottom {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 0.25rem);
+}
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
 
-@keyframes rf-fade-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-.rf-fade-up { animation: rf-fade-up .25s ease-out both; }
-@keyframes rf-sheet { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
-.rf-sheet { animation: rf-sheet .22s ease-out both; }
+@keyframes rf-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rf-fade-up {
+  animation: rf-fade-up 0.25s ease-out both;
+}
+@keyframes rf-sheet {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rf-sheet {
+  animation: rf-sheet 0.22s ease-out both;
+}

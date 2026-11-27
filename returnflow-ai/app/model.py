@@ -31,19 +31,23 @@ def train() -> dict:
     tx_test = [texts[i] for i in test_indices]
     ty_train = [labels[i] for i in train_indices]
     ty_test = [labels[i] for i in test_indices]
-    text_model = Pipeline([
-        ("tfidf", TfidfVectorizer(ngram_range=(1, 2), min_df=1, sublinear_tf=True)),
-        ("clf", LogisticRegression(max_iter=2000, C=3.0)),
-    ])
+    text_model = Pipeline(
+        [
+            ("tfidf", TfidfVectorizer(ngram_range=(1, 2), min_df=1, sublinear_tf=True)),
+            ("clf", LogisticRegression(max_iter=2000, C=3.0)),
+        ]
+    )
     text_model.fit(tx_train, ty_train)
     text_accuracy = accuracy_score(ty_test, text_model.predict(tx_test))
 
     X, y = make_risk_dataset()
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=5, stratify=y)
-    risk_model = Pipeline([
-        ("scale", StandardScaler()),
-        ("clf", LogisticRegression(max_iter=2000, C=1.0)),
-    ])
+    risk_model = Pipeline(
+        [
+            ("scale", StandardScaler()),
+            ("clf", LogisticRegression(max_iter=2000, C=1.0)),
+        ]
+    )
     risk_model.fit(X_train, y_train)
     proba = risk_model.predict_proba(X_test)[:, 1]
     pred = (proba >= 0.5).astype(int)
@@ -65,7 +69,7 @@ def train() -> dict:
             "recallAtDecisionThreshold": round(float(recall_score(y_test, decision_pred, zero_division=0)), 3),
             "decisionThreshold": APPROVE_MAX_RISK,
             "positiveRate": round(float(np.mean(y)), 3),
-            "testSamples": int(len(y_test)),
+            "testSamples": len(y_test),
         },
     }
     MODEL_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -99,8 +103,20 @@ class ClaimAnalyzer:
         h = req.history
         words = len(text.split())
         cat_vec = [1.0 if c == category else 0.0 for c in CATEGORIES]
-        x = np.array([[req.amountRequested, h.previousClaims, h.previousRejected,
-                       h.accountAgeDays, h.claimsLast30Days, words, *cat_vec]], dtype=float)
+        x = np.array(
+            [
+                [
+                    req.amount_requested,
+                    h.previous_claims,
+                    h.previous_rejected,
+                    h.account_age_days,
+                    h.claims_last_30_days,
+                    words,
+                    *cat_vec,
+                ]
+            ],
+            dtype=float,
+        )
         risk = float(self.risk_model.predict_proba(x)[0, 1])
 
         reasons = self._reasons(x, category, category_conf)
@@ -116,21 +132,21 @@ class ClaimAnalyzer:
             reasons = ["Claim reason is not covered by the automatic approval rules"]
 
         return AnalyzeResponse(
-            claimId=req.claimId,
+            claim_id=req.claim_id,
             category=category,
-            categoryConfidence=round(category_conf, 3),
-            riskScore=round(risk, 3),
+            category_confidence=round(category_conf, 3),
+            risk_score=round(risk, 3),
             confidence=round(float(confidence), 3),
-            recommendedOutcome=recommended,
+            recommended_outcome=recommended,
             reasons=reasons,
-            modelVersion=MODEL_VERSION,
+            model_version=MODEL_VERSION,
         )
 
     def _reasons(self, x: np.ndarray, category: str, category_conf: float) -> list[str]:
         scaler: StandardScaler = self.risk_model.named_steps["scale"]
         clf: LogisticRegression = self.risk_model.named_steps["clf"]
         contrib = clf.coef_[0] * scaler.transform(x)[0]  # log-odds contribution per feature
-        raw = dict(zip(RISK_FEATURES, x[0]))
+        raw = dict(zip(RISK_FEATURES, x[0], strict=True))
 
         labels = {
             "amount": lambda: f"High claimed amount ({raw['amount']:.0f})",

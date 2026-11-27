@@ -11,16 +11,16 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Decision> Decisions => Set<Decision>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
 
-    protected override void OnModelCreating(ModelBuilder b)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        b.Entity<AppUser>(e =>
+        modelBuilder.Entity<AppUser>(e =>
         {
             e.HasIndex(u => u.Email).IsUnique();
             e.Property(u => u.Email).HasMaxLength(256);
             e.Property(u => u.Role).HasConversion<string>().HasMaxLength(20);
         });
 
-        b.Entity<ReturnRequest>(e =>
+        modelBuilder.Entity<ReturnRequest>(e =>
         {
             e.Property(r => r.OrderReference).HasMaxLength(50);
             e.Property(r => r.Reason).HasMaxLength(500);
@@ -30,7 +30,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
-        b.Entity<ReturnClaim>(e =>
+        modelBuilder.Entity<ReturnClaim>(e =>
         {
             e.Property(c => c.Description).HasMaxLength(1000);
             e.Property(c => c.AmountRequested).HasPrecision(12, 2);
@@ -48,7 +48,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.HasIndex(c => c.CreatedAt);
         });
 
-        b.Entity<Decision>(e =>
+        modelBuilder.Entity<Decision>(e =>
         {
             e.Property(d => d.Outcome).HasConversion<string>().HasMaxLength(20);
             e.Property(d => d.DecidedBy).HasConversion<string>().HasMaxLength(10);
@@ -59,7 +59,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.HasIndex(d => d.DecidedAt);
         });
 
-        b.Entity<AuditLog>(e =>
+        modelBuilder.Entity<AuditLog>(e =>
         {
             e.Property(a => a.Action).HasMaxLength(100);
             e.Property(a => a.EntityType).HasMaxLength(50);

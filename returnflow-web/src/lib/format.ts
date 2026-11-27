@@ -1,5 +1,5 @@
-import type { Claim } from './types'
 import type { Language, Translator } from './i18n'
+import type { Claim } from './types'
 
 export const CURRENCY = 'USD'
 
@@ -13,7 +13,8 @@ export function fmtMinutes(min: number, t: Translator, locale: Language): string
   if (!min) return '-'
   if (min < 1) return `${Math.max(1, Math.round(min * 60))} ${t('unit.seconds')}`
   if (min < 90) return `${Math.round(min)} ${t('unit.minutes')}`
-  if (min < 60 * 48) return `${new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(min / 60)} ${t('unit.hours')}`
+  if (min < 60 * 48)
+    return `${new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(min / 60)} ${t('unit.hours')}`
   return `${new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(min / 1440)} ${t('unit.days')}`
 }
 
@@ -33,8 +34,7 @@ export const fmtDate = (iso: string, locale: Language) =>
 
 export const todayIso = () => new Date().toISOString().slice(0, 10)
 
-export const prettyCategory = (c: string | null, t: Translator) =>
-  c ? t(`category.${c}`) : t('category.unknown')
+export const prettyCategory = (c: string | null, t: Translator) => (c ? t(`category.${c}`) : t('category.unknown'))
 
 export type Tone = 'slate' | 'indigo' | 'green' | 'red' | 'amber'
 

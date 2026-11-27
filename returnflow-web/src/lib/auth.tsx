@@ -1,8 +1,11 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { api, tokenStore } from './api'
 import type { AuthResponse, Role } from './types'
 
-interface User { email: string; role: Role }
+export interface User {
+  email: string
+  role: Role
+}
 
 interface AuthContextValue {
   user: User | null

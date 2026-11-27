@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from 'react'
 
 export type Language = 'en' | 'fr' | 'de'
 type Messages = Record<string, string>
@@ -22,7 +22,8 @@ const translations: Record<Language, Messages> = {
     'role.Manager': 'Manager',
     'role.Admin': 'Admin',
     'login.headline': 'Returns and claims that mostly handle themselves.',
-    'login.intro': 'AI analyzes every claim in seconds. Clear cases are settled automatically, and a person steps in when the AI is unsure, or whenever a customer asks for one.',
+    'login.intro':
+      'AI analyzes every claim in seconds. Clear cases are settled automatically, and a person steps in when the AI is unsure, or whenever a customer asks for one.',
     'login.benefit1': 'Rules decide, AI advises, every step is logged',
     'login.benefit2': 'Customers can ask for a human review in one tap',
     'login.benefit3': 'Live KPIs: automation rate, speed, backlog',
@@ -134,7 +135,8 @@ const translations: Record<Language, Messages> = {
     'dashboard.changeDown': 'Down {change}% on the period before.',
     'dashboard.automationRecap': '{percent} needed no human: {auto} settled by the AI and policy, {human} by agents.',
     'dashboard.reviewsRecap': 'People asked for a human review {count} times.',
-    'dashboard.timeRecap': 'Automatic decisions took {auto} on average, compared with {human} when an agent was needed.',
+    'dashboard.timeRecap':
+      'Automatic decisions took {auto} on average, compared with {human} when an agent was needed.',
     'dashboard.approvalsRecap': '{percent} of decisions were approvals, worth {amount}.',
     'dashboard.commonIssue': 'Most common issue: {category} ({count} claims).',
     'dashboard.waitingRecap': '{count} claims are waiting for an agent right now.',
@@ -217,7 +219,8 @@ const translations: Record<Language, Messages> = {
     'role.Manager': 'Responsable',
     'role.Admin': 'Admin',
     'login.headline': 'Des retours et réclamations traités presque automatiquement.',
-    'login.intro': 'L’IA analyse chaque réclamation en quelques secondes. Les cas simples sont réglés automatiquement ; une personne intervient si l’IA hésite ou si le client le demande.',
+    'login.intro':
+      'L’IA analyse chaque réclamation en quelques secondes. Les cas simples sont réglés automatiquement ; une personne intervient si l’IA hésite ou si le client le demande.',
     'login.benefit1': 'Les règles décident, l’IA conseille, chaque étape est enregistrée',
     'login.benefit2': 'Les clients peuvent demander une vérification humaine en un clic',
     'login.benefit3': 'Indicateurs en direct : automatisation, rapidité, attente',
@@ -266,7 +269,8 @@ const translations: Record<Language, Messages> = {
     'common.loading': 'Chargement…',
     'common.close': 'Fermer',
     'queue.title': 'File de révision',
-    'queue.description': 'Seules les réclamations incertaines pour l’IA ou pour lesquelles une vérification humaine a été demandée apparaissent ici.',
+    'queue.description':
+      'Seules les réclamations incertaines pour l’IA ou pour lesquelles une vérification humaine a été demandée apparaissent ici.',
     'queue.needsReview': 'À examiner ({count})',
     'queue.recentlyDecided': 'Décisions récentes',
     'queue.emptyTitle': 'Aucune demande en attente',
@@ -327,9 +331,11 @@ const translations: Record<Language, Messages> = {
     'dashboard.decided': '{count} réclamations traitées sur {range}.',
     'dashboard.changeUp': 'En hausse de {change} % par rapport à la période précédente.',
     'dashboard.changeDown': 'En baisse de {change} % par rapport à la période précédente.',
-    'dashboard.automationRecap': '{percent} sans intervention humaine : {auto} traitées par l’IA et les règles, {human} par les agents.',
+    'dashboard.automationRecap':
+      '{percent} sans intervention humaine : {auto} traitées par l’IA et les règles, {human} par les agents.',
     'dashboard.reviewsRecap': '{count} demandes de vérification humaine.',
-    'dashboard.timeRecap': 'Les décisions automatiques ont pris {auto} en moyenne, contre {human} lorsqu’un agent est intervenu.',
+    'dashboard.timeRecap':
+      'Les décisions automatiques ont pris {auto} en moyenne, contre {human} lorsqu’un agent est intervenu.',
     'dashboard.approvalsRecap': '{percent} des décisions ont été des approbations, pour un total de {amount}.',
     'dashboard.commonIssue': 'Motif le plus fréquent : {category} ({count} réclamations).',
     'dashboard.waitingRecap': '{count} réclamations attendent actuellement un agent.',
@@ -412,7 +418,8 @@ const translations: Record<Language, Messages> = {
     'role.Manager': 'Manager',
     'role.Admin': 'Admin',
     'login.headline': 'Rücksendungen und Reklamationen, die sich fast von selbst erledigen.',
-    'login.intro': 'Die KI analysiert jede Reklamation in Sekunden. Eindeutige Fälle werden automatisch bearbeitet. Bei Unsicherheit oder auf Wunsch des Kunden hilft ein Mensch.',
+    'login.intro':
+      'Die KI analysiert jede Reklamation in Sekunden. Eindeutige Fälle werden automatisch bearbeitet. Bei Unsicherheit oder auf Wunsch des Kunden hilft ein Mensch.',
     'login.benefit1': 'Regeln entscheiden, die KI empfiehlt, jeder Schritt wird protokolliert',
     'login.benefit2': 'Kunden können mit einem Klick eine menschliche Prüfung anfordern',
     'login.benefit3': 'Live-Kennzahlen: Automatisierung, Geschwindigkeit, Rückstand',
@@ -461,7 +468,8 @@ const translations: Record<Language, Messages> = {
     'common.loading': 'Wird geladen…',
     'common.close': 'Schließen',
     'queue.title': 'Prüfwarteschlange',
-    'queue.description': 'Hier erscheinen nur Fälle, bei denen die KI unsicher war oder eine menschliche Prüfung angefordert wurde.',
+    'queue.description':
+      'Hier erscheinen nur Fälle, bei denen die KI unsicher war oder eine menschliche Prüfung angefordert wurde.',
     'queue.needsReview': 'Zu prüfen ({count})',
     'queue.recentlyDecided': 'Kürzlich entschieden',
     'queue.emptyTitle': 'Keine Fälle offen',
@@ -522,7 +530,8 @@ const translations: Record<Language, Messages> = {
     'dashboard.decided': '{count} Reklamationen wurden im Zeitraum {range} entschieden.',
     'dashboard.changeUp': 'Ein Anstieg um {change} % gegenüber dem vorherigen Zeitraum.',
     'dashboard.changeDown': 'Ein Rückgang um {change} % gegenüber dem vorherigen Zeitraum.',
-    'dashboard.automationRecap': '{percent} ohne menschliche Beteiligung: {auto} durch KI und Regeln, {human} durch Mitarbeiter bearbeitet.',
+    'dashboard.automationRecap':
+      '{percent} ohne menschliche Beteiligung: {auto} durch KI und Regeln, {human} durch Mitarbeiter bearbeitet.',
     'dashboard.reviewsRecap': '{count} menschliche Prüfungen wurden angefordert.',
     'dashboard.timeRecap': 'Automatische Entscheidungen dauerten durchschnittlich {auto}, mit Mitarbeiter {human}.',
     'dashboard.approvalsRecap': '{percent} der Entscheidungen waren Genehmigungen, im Wert von {amount}.',
@@ -550,7 +559,8 @@ const translations: Record<Language, Messages> = {
     'ai.route.risk': 'Risikowert {score} über dem automatischen Limit',
     'ai.route.confidence': 'KI-Konfidenz {score} unter dem automatischen Limit',
     'ai.route.spotCheck': 'Zufällige Qualitätsprüfung',
-    'ai.route.approved': 'Niedriges Risiko ({risk}), hohe Konfidenz ({confidence}), Betrag innerhalb des automatischen Limits',
+    'ai.route.approved':
+      'Niedriges Risiko ({risk}), hohe Konfidenz ({confidence}), Betrag innerhalb des automatischen Limits',
     'risk.low': 'Niedriges Risiko',
     'risk.medium': 'Mittleres Risiko',
     'risk.high': 'Hohes Risiko',
@@ -611,15 +621,19 @@ function initialLanguage(): Language {
     // Storage can be unavailable in restricted browser contexts.
   }
   const browserLanguage = navigator.language.slice(0, 2)
-  return supportedLanguages.includes(browserLanguage as Language) ? browserLanguage as Language : 'en'
+  return supportedLanguages.includes(browserLanguage as Language) ? (browserLanguage as Language) : 'en'
 }
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [language, setLanguage] = useState<Language>(initialLanguage)
-  const t = useMemo<I18nValue['t']>(() => (key, values = {}) => {
-    const message = translations[language][key] ?? translations.en[key] ?? key
-    return message.replace(/\{(\w+)\}/g, (_, name: string) => String(values[name] ?? `{${name}}`))
-  }, [language])
+  const t = useMemo<I18nValue['t']>(
+    () =>
+      (key, values = {}) => {
+        const message = translations[language][key] ?? translations.en[key] ?? key
+        return message.replace(/\{(\w+)\}/g, (_, name: string) => String(values[name] ?? `{${name}}`))
+      },
+    [language],
+  )
 
   useEffect(() => {
     document.documentElement.lang = language
@@ -651,14 +665,22 @@ export function translateAnalysisText(text: string, t: Translator): string {
     [/^Description is unclear, so the category is uncertain$/, 'ai.reason.unclear', () => ({})],
     [/^Claim reason is not covered by the automatic approval rules$/, 'ai.reason.notCovered', () => ({})],
     [/^Automation is switched off$/, 'ai.route.disabled', () => ({})],
-    [/^Purchased (\d+) days ago, outside the (\d+)-day return window$/, 'ai.route.outsideWindow', (m) => ({ days: m[1], window: m[2] })],
+    [
+      /^Purchased (\d+) days ago, outside the (\d+)-day return window$/,
+      'ai.route.outsideWindow',
+      (m) => ({ days: m[1], window: m[2] }),
+    ],
     [/^AI analysis was unavailable$/, 'ai.route.unavailable', () => ({})],
     [/^AI asked for a human review$/, 'ai.route.review', () => ({})],
     [/^Amount is above the automatic limit of (.+)$/, 'ai.route.amount', (m) => ({ amount: m[1] })],
     [/^Risk score ([\d.]+) is above the automatic limit$/, 'ai.route.risk', (m) => ({ score: m[1] })],
     [/^AI confidence ([\d.]+) is below the automatic limit$/, 'ai.route.confidence', (m) => ({ score: m[1] })],
     [/^Random quality spot-check$/, 'ai.route.spotCheck', () => ({})],
-    [/^Low risk \(([\d.]+)\), high confidence \(([\d.]+)\), amount within the automatic limit$/, 'ai.route.approved', (m) => ({ risk: m[1], confidence: m[2] })],
+    [
+      /^Low risk \(([\d.]+)\), high confidence \(([\d.]+)\), amount within the automatic limit$/,
+      'ai.route.approved',
+      (m) => ({ risk: m[1], confidence: m[2] }),
+    ],
   ]
   for (const [pattern, key, values] of matches) {
     const match = text.match(pattern)
@@ -679,7 +701,9 @@ export function LanguageSelect() {
         className="min-h-10 rounded-lg border-0 bg-white px-2.5 text-sm font-medium text-slate-700 ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-indigo-600 focus:outline-none"
       >
         {supportedLanguages.map((code) => (
-          <option key={code} value={code}>{t(`language.${code}`)}</option>
+          <option key={code} value={code}>
+            {t(`language.${code}`)}
+          </option>
         ))}
       </select>
     </label>
